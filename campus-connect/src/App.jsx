@@ -1,5 +1,8 @@
 
 
+import CategoryCards from './Components/CategoryCards';
+import TrendingResources from './Components/TrendingResources';
+
 // Main App component
 // Renders the Navbar and Hero section inside a styled container
 
@@ -10,6 +13,10 @@ function App() {
       <Navbar />
       {/* Hero section with headline and CTA */}
       <Hero />
+      {/* Category cards section */}
+      <CategoryCards />
+      {/* Trending resources section */}
+      <TrendingResources />
     </div>
   );
 }
