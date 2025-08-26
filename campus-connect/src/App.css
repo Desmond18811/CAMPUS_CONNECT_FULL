@@ -1,3 +1,109 @@
+.navbar[data-theme='dark'],
+body[data-theme='dark'] .navbar {
+  background: #232b3a;
+  color: #f3f4f8;
+}
+.category-card[data-theme='dark'],
+body[data-theme='dark'] .category-card {
+  background: #232b3a;
+  color: #f3f4f8;
+}
+.hero[data-theme='dark'],
+body[data-theme='dark'] .hero {
+  background: #232b3a;
+  color: #f3f4f8;
+}
+.resource-card[data-theme='dark'],
+body[data-theme='dark'] .resource-card {
+  background: #232b3a;
+  color: #f3f4f8;
+}
+
+body[data-theme='dark'] .brand,
+body[data-theme='dark'] .navbar-right button,
+body[data-theme='dark'] .category-label,
+body[data-theme='dark'] .hero-title,
+body[data-theme='dark'] .trending-title,
+body[data-theme='dark'] .resource-title,
+body[data-theme='dark'] .resource-meta {
+  color: #f3f4f8 !important;
+}
+body[data-theme='dark'] .login-btn,
+body[data-theme='dark'] .signup-btn {
+  background: #181f2a;
+  color: #4f8cff;
+  border: 2px solid #4f8cff;
+}
+body[data-theme='dark'] .login-btn:hover,
+body[data-theme='dark'] .signup-btn:hover {
+  background: #4f8cff;
+  color: #fff;
+  border-color: #4f8cff;
+}
+body[data-theme='dark'] .theme-btn {
+  background: #232b3a;
+  color: #4f8cff;
+  border: 1px solid #4f8cff;
+}
+body[data-theme='dark'] .theme-btn:hover {
+  background: #4f8cff;
+  color: #fff;
+}
+body[data-theme='dark'] .logo {
+  background: #4f8cff;
+  color: #fff;
+}
+/* Theme Toggle Buttons */
+.theme-toggle-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-bottom: 0.7rem;
+}
+.theme-btn {
+  background: #fff;
+  color: #222;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.theme-btn:hover {
+  background: #4f8cff;
+  color: #fff;
+}
+
+/* Dark mode styles */
+body[data-theme='dark'] {
+  background: #181f2a;
+}
+.app-container[data-theme='dark'],
+body[data-theme='dark'] .app-container {
+  background: #232b3a;
+  color: #f3f4f8;
+}
+.navbar[data-theme='dark'],
+body[data-theme='dark'] .navbar {
+  background: #232b3a;
+  color: #f3f4f8;
+}
+.category-card[data-theme='dark'],
+body[data-theme='dark'] .category-card {
+  background: #232b3a;
+  color: #f3f4f8;
+}
+.hero[data-theme='dark'],
+body[data-theme='dark'] .hero {
+  background: #232b3a;
+  color: #f3f4f8;
+}
+.resource-card[data-theme='dark'],
+body[data-theme='dark'] .resource-card {
+  background: #232b3a;
+  color: #f3f4f8;
+}
 /* Category Cards Section */
 .category-cards {
   display: flex;
@@ -103,14 +209,14 @@
   background: #4f8cff;
   color: #fff;
   font-weight: bold;
-  font-size: 1.6rem;
-  border-radius: 8px;
-  width: 38px;
-  height: 38px;
+  font-size: 1rem;
+  border-radius: 4px;
+  padding: 0.02em 0.32em;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 0.7rem;
+  line-height: 1;
 }
 .brand {
   font-size: 1.3rem;
