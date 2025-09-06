@@ -1,0 +1,82 @@
+/* Main container for the component */
+.component {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  width: 90%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Cards wrapper using CSS Grid */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* auto-responsive */
+  gap: 24px;                   /* default spacing between cards */
+  width: 100%;
+  justify-items: center;       /* center cards inside each grid cell */
+}
+
+/* Individual card styling */
+.cards .card {
+  width: 100%;
+  max-width: 490px;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  background-color: #f0f9ff;
+  border: 1px solid #bfdbfe;
+  text-align: center;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.cards .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 15px rgba(59, 130, 246, 0.15);
+}
+
+/* ======================= RESPONSIVE BREAKPOINTS ======================= */
+
+/* ======================= RESPONSIVE BREAKPOINTS ======================= */
+
+/* Tablet screens */
+@media (max-width: 1024px) {
+  .cards {
+    gap: 16px;
+  }
+  .cards .card {
+    max-width: 320px;          /* slimmer than before */
+    padding: 1.1rem;
+    font-size: 0.95rem;        /* slightly smaller text */
+    height: 320px;
+  }
+}
+
+/* Mobile screens */
+@media (max-width: 768px) {
+  .cards {
+    grid-template-columns: 1fr;  /* stack cards vertically */
+    gap: 12px;
+    justify-items: center;
+  }
+  .cards .card {
+    max-width: 90%;             /* narrower than full width */
+    padding: 0.9rem;            /* compact padding */
+    font-size: 0.9rem;          /* smaller text */
+  }
+}
+
+/* Extra small screens (phones <480px) */
+@media (max-width: 480px) {
+  .cards {
+    gap: 8px;
+  }
+  .cards .card {
+    max-width: 85%;             /* slimmer card */
+    padding: 0.75rem;
+    font-size: 0.8rem;          /* lighter text */
+    border-radius: 0.5rem;      /* softer corners */
+  }
+}

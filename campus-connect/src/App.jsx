@@ -1,24 +1,25 @@
 
-import Navbar from './Components/Navbar';
-import Hero from './Components/Hero';
-import CategoryCards from './Components/CategoryCards';
-import TrendingResources from './Components/TrendingResources';
 import './App.css';
+import Card from './Components/Card';
+import CategoryCards from './Components/CategoryCards';
+import Hero from "./Components/Hero";
+import How from './Components/How';
 
+import Navbar from "./Components/Navbar";
+import Notify from './Components/Notify';
+import TrendingResources from './Components/TrendingResources';
 // Main App component
 // Renders the Navbar and Hero section inside a styled container
 
 function App() {
   return (
     <div className="app-container">
-      {/* Top navigation bar */}
-      <Navbar />
-      {/* Hero section with headline and CTA */}
-      <Hero />
-      {/* Category cards section */}
-      <CategoryCards />
-      {/* Trending resources section */}
-      <TrendingResources />
+    <Navbar/>
+    <Hero/>
+    <CategoryCards/>
+    <TrendingResources/>
+    <How/>
+    <Notify/>
     </div>
   );
 }

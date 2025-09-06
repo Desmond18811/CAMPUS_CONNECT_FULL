@@ -1,16 +1,32 @@
+import Lottie from "lottie-react";
+import animationData from "../assets/File Search.json";
+import "./../styles/Hero.css";
 
-// Hero component for the Campus Connect app
-// Displays the main headline and call-to-action button
-const Hero = () => (
-  <section className="hero">
-    {/* Main headline describing the platform */}
-    <h1 className="hero-title">
-      Your Academic Hub —<br />
-      Past Questions, Projects, Materials in One Place
-    </h1>
-    {/* Call-to-action button */}
-    <button className="start-learning-btn">Start Learning</button>
-  </section>
-);
+const Hero = () => {
+  return (
+    <section className="hero">
+      <div className="hero-container">
+        {/* Left side - text */}
+        <div className="hero-content">
+          <h1 className="hero-title">Your Academic Hub-</h1>
+          <h1 className="hero-title">Past Questions, Projects,</h1>
+          <h1 className="hero-title">Materials in One Place</h1>
+          <p className="hero-subtitle">
+  Access, organize, and download academic materials, past questions, and study resources from your school effortlessly.
+</p>
+
+          <div className="hero-btn-wrapper">
+            <button className="hero-btn">Get Started</button>
+          </div>
+        </div>
+
+        {/* Right side - animation */}
+        <div className="hero-animation">
+          <Lottie animationData={animationData} loop={true} />
+        </div>
+      </div>
+    </section>
+  );
+};
 
 export default Hero;
