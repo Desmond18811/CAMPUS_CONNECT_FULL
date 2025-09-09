@@ -20,7 +20,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;   /* full screen height */
-  padding: 20px;
+
   width: 100vw;
 }
 

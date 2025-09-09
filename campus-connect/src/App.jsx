@@ -2,6 +2,7 @@
 import './App.css';
 import Card from './Components/Card';
 import CategoryCards from './Components/CategoryCards';
+import Footer from './Components/Footer';
 import Hero from "./Components/Hero";
 import How from './Components/How';
 
@@ -20,6 +21,7 @@ function App() {
     <TrendingResources/>
     <How/>
     <Notify/>
+    <Footer/>
     </div>
   );
 }
