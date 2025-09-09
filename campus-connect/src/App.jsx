@@ -1,29 +1,19 @@
-
-import './App.css';
-import Card from './Components/Card';
-import CategoryCards from './Components/CategoryCards';
-import Footer from './Components/Footer';
-import Hero from "./Components/Hero";
-import How from './Components/How';
-
-import Navbar from "./Components/Navbar";
-import Notify from './Components/Notify';
-import TrendingResources from './Components/TrendingResources';
-// Main App component
-// Renders the Navbar and Hero section inside a styled container
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './Components/Home';
+import Login from './Components/Login';
+import Signup from './Components/Signup';
 
 function App() {
-  return (
-    <div className="app-container">
-    <Navbar/>
-    <Hero/>
-    <CategoryCards/>
-    <TrendingResources/>
-    <How/>
-    <Notify/>
-    <Footer/>
-    </div>
-  );
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="*" element={<Home />} /> {/* This should be last */}
+            </Routes>
+        </Router>
+    );
 }
 
-export default App
+export default App;
