@@ -293,11 +293,11 @@
     text-decoration: underline;
 }
 
-/* Mobile responsiveness */
 @media (max-width: 768px) {
     .auth-container {
         padding: 16px;
-        align-items: flex-start;
+        align-items: center; /* Changed from flex-start to center */
+        justify-content: center; /* Add this to center vertically */
         min-height: 100vh;
     }
 
@@ -305,6 +305,8 @@
         flex-direction: column;
         max-width: 100%;
         min-height: auto;
+        width: 100%; /* Ensure it takes full width */
+        max-width: 400px; /* Optional: set a max width for better appearance */
     }
 
     .auth-animation {
@@ -316,6 +318,7 @@
         flex: none;
         width: 100%;
         border-radius: 24px;
+        margin: 0 auto; /* Center horizontally */
     }
 
     .auth-card h2 {
@@ -345,6 +348,7 @@
 
     .auth-content {
         border-radius: 20px;
+        max-width: 100%; /* Allow it to take full width on very small screens */
     }
 
     .auth-card {
@@ -410,7 +414,6 @@
         margin: 8px 0 4px 0;
     }
 }
-
 /* Large screens */
 @media (min-width: 1024px) {
     .auth-content {
