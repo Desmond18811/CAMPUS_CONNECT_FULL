@@ -14,8 +14,8 @@
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
-  width: 90%;             /* take 90% of viewport width */
-  max-width: 1900px;      /* limit max width on very large screens */
+ width: 100%;
+  max-width: 1900px;     /* limit max width on very large screens */
   margin: 0 auto;         /* center horizontally */
   align-items: center;
   justify-content: space-between;

@@ -3,6 +3,7 @@ import animationData from "../assets/File Search.json";
 import "./../styles/Hero.css";
 
 const Hero = () => {
+    console.log("Hero loaded");
   return (
     <section className="hero">
       <div className="hero-container">
