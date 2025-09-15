@@ -1,9 +1,14 @@
 import Lottie from "lottie-react";
 import animationData from "../assets/File Search.json";
 import "./../styles/Hero.css";
+import {useNavigate} from "react-router-dom";
 
 const Hero = () => {
-    console.log("Hero loaded");
+    const navigate = useNavigate()
+
+    const handleSignUp = () => {
+       navigate("/signup")
+   }
   return (
     <section className="hero">
       <div className="hero-container">
@@ -17,7 +22,7 @@ const Hero = () => {
 </p>
 
           <div className="hero-btn-wrapper">
-            <button className="hero-btn">Get Started</button>
+            <button className="hero-btn " onClick={handleSignUp}>Get Started</button>
           </div>
         </div>
 

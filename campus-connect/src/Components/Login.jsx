@@ -53,7 +53,7 @@ const Login = () => {
 
             if (response.data.token) {
                 localStorage.setItem('token', response.data.token);
-                navigate('/', { replace: true });
+                navigate('/home');
             } else {
                 throw new Error('No token received');
             }
@@ -84,7 +84,7 @@ const Login = () => {
 
         if (token) {
             localStorage.setItem('token', token);
-            navigate('/', { replace: true });
+            navigate('/home');
         }
     }, [navigate]);
 

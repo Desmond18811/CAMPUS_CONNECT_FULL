@@ -11,7 +11,7 @@ function Navbar() {
     const handleSignUp = () => {
         navigate("/signup");
     };
-     console.log("Navbar loaded");
+
     return (
         <nav className="navbar">
             {/* Logo */}
