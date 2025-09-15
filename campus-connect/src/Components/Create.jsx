@@ -1,32 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { X, Image, FileText, Plus } from 'lucide-react';
 import '../styles/CreatePost.css';
 
 const Create = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [documentTitle, setDocumentTitle] = useState('');
+    const [description, setDescription] = useState('');
     const [filters, setFilters] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const fileRef = useRef(null);
+    const imageRef = useRef(null);
+
+    const handleFileSelect = (e) => {
+        if (e.target.files[0]) {
+            setSelectedFile(e.target.files[0]);
+        }
+    };
+
+    const handleImageSelect = (e) => {
+        if (e.target.files[0]) {
+            setSelectedImage(e.target.files[0]);
+        }
+    };
 
     const handlePost = async () => {
-        if (!documentTitle.trim()) {
-            alert('Please enter a document title');
+        if (!documentTitle.trim() || !selectedFile) {
+            alert('Please enter a document title and select a file');
             return;
         }
 
         setIsLoading(true);
         try {
+            const formData = new FormData();
+            formData.append('title', documentTitle);
+            formData.append('description', description);
+            formData.append('subject', 'General'); // Hardcoded; replace with dynamic input if needed
+            formData.append('gradeLevel', 'All'); // Hardcoded; replace with dynamic input if needed
+            formData.append('resourceType', 'document');
+            filters.forEach((filter) => {
+                formData.append('tags[]', filter);
+            });
+            formData.append('file', selectedFile);
+            if (selectedImage) {
+                formData.append('image', selectedImage);
+            }
+
             const response = await fetch('https://campcon-test.onrender.com/api/resources', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    title: documentTitle,
-                    filters: filters,
-                    type: 'document'
-                }),
+                body: formData,
+                // If authentication is required, add headers like:
+                // headers: { 'Authorization': `Bearer ${yourToken}` },
             });
 
             if (response.ok) {
@@ -35,7 +61,10 @@ const Create = () => {
                     setShowSuccess(false);
                     setIsOpen(false);
                     setDocumentTitle('');
+                    setDescription('');
                     setFilters([]);
+                    setSelectedFile(null);
+                    setSelectedImage(null);
                 }, 2000);
             } else {
                 throw new Error('Failed to create post');
@@ -116,6 +145,18 @@ const Create = () => {
                         />
                     </div>
 
+                    {/* Description */}
+                    <div className="title-section">
+                        <h3>Description:</h3>
+                        <textarea
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            placeholder="Type the description (optional)"
+                            className="title-input"
+                            maxLength={1000}
+                        />
+                    </div>
+
                     {/* Filters Section */}
                     <div className="filters-section">
                         <button
@@ -133,14 +174,14 @@ const Create = () => {
                                         key={index}
                                         className="filter-tag"
                                     >
-                    {filter}
+                                        {filter}
                                         <button
                                             onClick={() => removeFilter(index)}
                                             className="filter-remove"
                                         >
-                      <X />
-                    </button>
-                  </span>
+                                            <X />
+                                        </button>
+                                    </span>
                                 ))}
                             </div>
                         )}
@@ -148,13 +189,28 @@ const Create = () => {
 
                     {/* Media Icons */}
                     <div className="media-icons">
-                        <button className="media-button">
+                        <button className="media-button" onClick={() => imageRef.current.click()}>
                             <Image />
                         </button>
-                        <button className="media-button">
+                        <button className="media-button" onClick={() => fileRef.current.click()}>
                             <FileText />
                         </button>
                     </div>
+
+                    {/* Hidden File Inputs */}
+                    <input
+                        type="file"
+                        ref={imageRef}
+                        style={{ display: 'none' }}
+                        onChange={handleImageSelect}
+                        accept="image/*"
+                    />
+                    <input
+                        type="file"
+                        ref={fileRef}
+                        style={{ display: 'none' }}
+                        onChange={handleFileSelect}
+                    />
 
                     {/* Post Button */}
                     <div className="post-section">
@@ -184,3 +240,5 @@ const Create = () => {
 };
 
 export default Create;
+
+
