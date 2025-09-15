@@ -1,11 +1,11 @@
 import React from 'react';
 
-const Explore = () => {
+const Create = () => {
     return (
         <div>
-            Explore
+            Create
         </div>
     );
 };
 
-export default Explore;
+export default Create;
