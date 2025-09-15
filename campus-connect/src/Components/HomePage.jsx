@@ -100,37 +100,37 @@ const HomePage = () => {
                 {/* Navigation */}
                 <nav className="navigation">
                     <div className="nav-item">
-                        <Search size={20} />
+                        <Search size={20} color='#2563eb'/>
                         <span onClick={handleSearch}>Search</span>
                     </div>
 
                     <div className="nav-item">
-                        <Heart size={20} />
+                        <Heart size={20} color='#2563eb'/>
                         <span onClick={handleLikedPost}>Liked Posts</span>
                     </div>
 
                     <div className="nav-item">
-                        <Bookmark size={20} />
+                        <Bookmark size={20} color='#2563eb'/>
                         <span onClick={handleSavedPosts}>Saved Posts</span>
                     </div>
 
                     <div className="nav-item">
-                        <Bell size={20} />
+                        <Bell size={20} color='#2563eb'/>
                         <span onClick={handleNotifications}>Notifications</span>
                     </div>
 
                     <div className="nav-item">
-                        <Plus size={20} />
+                        <Plus size={20} color='#2563eb'/>
                         <span onClick={handleCreatePost}>Create Post</span>
                     </div>
 
                     <div className="nav-item">
-                        <Compass size={20} />
+                        <Compass size={20} color='#2563eb'/>
                         <span onClick={handleExplore}>Explore</span>
                     </div>
 
                     <div className="nav-item">
-                        <Settings size={20} />
+                        <Settings size={20} color='#2563eb'/>
                         <span onClick={handleSettings}>Settings</span>
                     </div>
                 </nav>
@@ -152,7 +152,7 @@ const HomePage = () => {
                         <Search className="search-icon" size={20} />
                         <input
                             type="text"
-                            placeholder="Search"
+                            placeholder="Search for contents"
                             className="search-input"
                         />
                     </div>
