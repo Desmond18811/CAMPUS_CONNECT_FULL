@@ -10,7 +10,7 @@ import Notify from './Notify';
 import TrendingResources from './TrendingResources';
 
 
-const Home = () => {
+const LandingPage = () => {
     return (
         <div className="app-container">
             <Navbar/>
@@ -23,4 +23,4 @@ const Home = () => {
         </div>
     );
 }
-export default Home
+export default LandingPage
