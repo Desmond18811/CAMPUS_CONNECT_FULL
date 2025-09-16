@@ -77,16 +77,48 @@ const Login = () => {
         window.location.href = 'https://campcon-test.onrender.com/api/auth/google';
     };
 
-    // Check for token in URL (callback from Google)
+// Check for token or error in URL (callback from Google)
     React.useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get('token');
+        const error = urlParams.get('error');
+
+        if (error) {
+            console.error('Google OAuth error:', error);
+            setIsGoogleLoading(false);
+            // Optionally show error message to user
+            return;
+        }
 
         if (token) {
-            localStorage.setItem('token', token);
-            navigate('/home');
+            // Validate token structure (basic check)
+            if (isValidToken(token)) {
+                localStorage.setItem('token', token);
+
+                // Clean up URL by removing token parameter
+                const cleanUrl = window.location.origin + window.location.pathname;
+                window.history.replaceState({}, document.title, cleanUrl);
+
+                navigate('/home');
+            } else {
+                console.error('Invalid token received');
+                setIsGoogleLoading(false);
+            }
         }
     }, [navigate]);
+
+// Basic token validation function
+    const isValidToken = (token) => {
+        // Simple check for JWT structure (3 parts separated by dots)
+        return token && typeof token === 'string' && token.split('.').length === 3;
+    };
+
+// Optional: Add cleanup for loading state on component unmount
+    React.useEffect(() => {
+        return () => {
+            setIsGoogleLoading(false);
+        };
+    }, []);
 
     return (
         <div className="auth-container">

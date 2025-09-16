@@ -46,7 +46,7 @@ const HomePage = () => {
     }
 
     const handleLogOut = () => {
-        navigate('/login')
+        navigate('/signup')
     }
     //Generic post data
     const posts = [
@@ -81,6 +81,20 @@ const HomePage = () => {
         {
             id: 5,
             username: "User is desmond",
+            timeAgo: "Posted 1s ago",
+            title: "Document Title",
+            tags: ['red', 'blue', 'orange', 'green']
+        },
+        {
+            id: 6,
+            username: "User is black",
+            timeAgo: "Posted 1s ago",
+            title: "Document Title",
+            tags: ['purple', 'red', 'orange', 'yellow']
+        },
+        {
+            id: 7,
+            username: "User is fat",
             timeAgo: "Posted 1s ago",
             title: "Document Title",
             tags: ['red', 'blue', 'orange', 'green']
@@ -136,10 +150,10 @@ const HomePage = () => {
                 </nav>
 
                 {/* Log Out Button */}
-                <div className="sidebar-footer">
+                <div className="sidebar-footer" onClick={handleLogOut}>
                     <button className="logout-btn">
                         <LogOut size={20} />
-                        <span onClick={handleLogOut}>Log Out</span>
+                        <span>Log Out</span>
                     </button>
                 </div>
             </div>
@@ -222,7 +236,7 @@ const HomePage = () => {
             </div>
 
             {/* Floating Action Button */}
-            <button className="fab">
+            <button className="fab" onClick={handleCreatePost}>
                 <Edit size={24} />
             </button>
         </div>
