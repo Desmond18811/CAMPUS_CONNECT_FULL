@@ -1,241 +1,164 @@
-import React, { useState } from 'react';
-import { X, User, Bell, Heart, Bookmark, MessageCircle, HelpCircle, Shield, UserCheck } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, User, Bell as BellSettings, Heart as HeartSettings, Bookmark as BookmarkSettings, MessageCircle as MessageCircleSettings, HelpCircle, Shield, UserCheck, Image } from 'lucide-react';
 import '../styles/Settings.css';
 
-const SettingsScreen = () => {
+const Settings = ({ onClose }) => {
+    const [formDataSettings, setFormDataSettings] = useState({
+        username: '', schoolName: '', level: '', bio: '', profileColor: '#cc002e',
+    });
+    const [profileImage, setProfileImage] = useState(null);
+    const [isSubmittingSettings, setIsSubmittingSettings] = useState({ username: false, schoolName: false, level: false, bio: false });
     const [activeSection, setActiveSection] = useState('editProfile');
-    const [isOpen, setIsOpen] = useState(false);
-    const [formData, setFormData] = useState({
-        username: '',
-        schoolName: '',
-        level: '',
-        bio: ''
-    });
-    const [isSubmitting, setIsSubmitting] = useState({
-        username: false,
-        schoolName: false,
-        level: false,
-        bio: false
-    });
 
-    const handleInputChange = (field, value) => {
-        setFormData(prev => ({
-            ...prev,
-            [field]: value
-        }));
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => setProfileImage(e.target.result);
+            reader.readAsDataURL(file);
+        }
     };
 
-    const handleSubmit = async (field) => {
-        setIsSubmitting(prev => ({ ...prev, [field]: true }));
+    const handleInputChangeSettings = (field, value) => {
+        setFormDataSettings(prev => ({ ...prev, [field]: value }));
+    };
 
+    const handleSubmitSettings = async (field) => {
+        setIsSubmittingSettings(prev => ({ ...prev, [field]: true }));
         try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            alert(`${field} updated successfully!`);
+            const formData = new FormData();
+            formData.append('username', formDataSettings.username);
+            formData.append('schoolName', formDataSettings.schoolName);
+            formData.append('level', formDataSettings.level);
+            formData.append('bio', formDataSettings.bio);
+            if (profileImage && profileImage instanceof File) formData.append('profilePic', profileImage);
+
+            const response = await fetch('https://campcon-test.onrender.com/api/users/profile', {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                body: formData,
+            });
+
+            if (response.ok) alert(`${field} updated successfully!`);
+            else throw new Error('Failed to update profile');
         } catch (error) {
             alert(`Failed to update ${field}`);
+            console.log(error);
         } finally {
-            setIsSubmitting(prev => ({ ...prev, [field]: false }));
+            setIsSubmittingSettings(prev => ({ ...prev, [field]: false }));
         }
     };
 
     const menuItems = [
-        {
-            category: 'How you use campus connect',
-            items: [
-                { id: 'editProfile', label: 'Edit Profile', icon: User, active: true }
-            ]
-        },
-        {
-            category: null,
-            items: [
-                { id: 'notifications', label: 'Notifications', icon: Bell }
-            ]
-        },
-        {
-            category: 'How others can interact with you',
-            items: [
-                { id: 'likedPosts', label: 'Liked Posts', icon: Heart },
-                { id: 'savedPosts', label: 'Saved Posts', icon: Bookmark },
-                { id: 'comments', label: 'Comments', icon: MessageCircle }
-            ]
-        },
-        {
-            category: 'More info and support',
-            items: [
+        { category: 'How you use campus connect', items: [{ id: 'editProfile', label: 'Edit Profile', icon: User, active: true }] },
+        { category: null, items: [{ id: 'notifications', label: 'Notifications', icon: BellSettings }] },
+        { category: 'How others can interact with you', items: [
+                { id: 'likedPosts', label: 'Liked Posts', icon: HeartSettings },
+                { id: 'savedPosts', label: 'Saved Posts', icon: BookmarkSettings },
+                { id: 'comments', label: 'Comments', icon: MessageCircleSettings },
+            ]},
+        { category: 'More info and support', items: [
                 { id: 'help', label: 'Help', icon: HelpCircle },
                 { id: 'privacySupport', label: 'Privacy Support', icon: Shield },
-                { id: 'accountStatus', label: 'Account Status', icon: UserCheck }
-            ]
-        }
+                { id: 'accountStatus', label: 'Account Status', icon: UserCheck },
+            ]},
     ];
 
-    if (!isOpen) {
-        return (
-            <div className="settings-container">
-                <button
-                    onClick={() => setIsOpen(true)}
-                    className="open-settings-button"
-                >
-                    Open Settings
-                </button>
-            </div>
-        );
-    }
+    useEffect(() => {
+        // Fetch initial profile data if needed
+        const token = localStorage.getItem('token');
+        if (token) {
+            fetch('https://campcon-test.onrender.com/api/users/profile', {
+                headers: { 'Authorization': `Bearer ${token}` },
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) setFormDataSettings({
+                        username: data.data.username || '',
+                        schoolName: data.data.school || '',
+                        level: data.data.gradeLevel || '',
+                        bio: data.data.bio || '',
+                        profileColor: '#cc002e',
+                    });
+                });
+        }
+    }, []);
 
     return (
         <div className="settings-container">
-            <div className="settings-backdrop" onClick={() => setIsOpen(false)} />
-
+            <div className="settings-backdrop" onClick={onClose} />
             <div className="settings-modal">
                 <div className="settings-layout">
-                    {/* Left Sidebar */}
                     <div className="settings-sidebar">
                         <h2 className="settings-title">Settings</h2>
-
-                        {menuItems.map((section, sectionIndex) => (
-                            <div key={sectionIndex} className="menu-section">
-                                {section.category && (
-                                    <h3 className="menu-category">{section.category}</h3>
-                                )}
-                                {section.items.map((item) => (
-                                    <button
-                                        key={item.id}
-                                        onClick={() => setActiveSection(item.id)}
-                                        className={`menu-item ${item.active || activeSection === item.id ? 'active' : ''}`}
-                                    >
-                                        <item.icon className="menu-icon" />
-                                        {item.label}
+                        {menuItems.map((section, index) => (
+                            <div key={index} className="menu-section">
+                                {section.category && <h3 className="menu-category">{section.category}</h3>}
+                                {section.items.map(item => (
+                                    <button key={item.id} onClick={() => setActiveSection(item.id)} className={`menu-item ${item.active || activeSection === item.id ? 'active' : ''}`}>
+                                        <item.icon className="menu-icon" />{item.label}
                                     </button>
                                 ))}
                             </div>
                         ))}
                     </div>
-
-                    {/* Vertical Divider */}
                     <div className="settings-divider"></div>
-
-                    {/* Right Content */}
                     <div className="settings-content">
                         <div className="content-header">
                             <h2 className="content-title">Edit Profile</h2>
-                            <button
-                                onClick={() => setIsOpen(false)}
-                                className="close-button"
-                            >
-                                <X />
-                            </button>
+                            <button onClick={onClose} className="close-button"><X /></button>
                         </div>
-
                         <div className="profile-section">
-                            {/* Profile Card */}
                             <div className="profile-card">
                                 <div className="profile-info">
                                     <div className="avatar-large">
-                                        <div className="avatar-inner-large">
-                                            <div className="avatar-x1-large" />
-                                            <div className="avatar-x2-large" />
-                                        </div>
+                                        {profileImage ? <img src={profileImage} alt="Profile" className="profile-image-large" /> : (
+                                            <div className="avatar-inner-large" style={{ backgroundColor: formDataSettings.profileColor, color: 'white', fontSize: '24px', fontWeight: 'bold' }}>
+                                                {formDataSettings.username.charAt(0).toUpperCase() || 'U'}
+                                            </div>
+                                        )}
                                     </div>
-                                    <span className="profile-username">@username</span>
+                                    <span className="profile-username">@{formDataSettings.username || 'username'}</span>
                                 </div>
-                                <button className="edit-profile-btn">Edit Profile</button>
+                                <div className="profile-image-actions">
+                                    <input type="file" id="profile-image-upload" style={{ display: 'none' }} accept="image/*" onChange={handleImageUpload} />
+                                    <label htmlFor="profile-image-upload" className="image-upload-btn"><Image size={16} />Choose Image</label>
+                                </div>
                             </div>
-
-                            {/* Form Fields */}
                             <div className="form-section">
                                 <div className="form-group">
                                     <label className="form-label">Change Username</label>
                                     <div className="form-input-group">
-                                        <input
-                                            type="text"
-                                            value={formData.username}
-                                            onChange={(e) => handleInputChange('username', e.target.value)}
-                                            className="form-input"
-                                            placeholder="Enter new username"
-                                        />
-                                        <button
-                                            onClick={() => handleSubmit('username')}
-                                            disabled={isSubmitting.username || !formData.username.trim()}
-                                            className="submit-btn"
-                                        >
-                                            {isSubmitting.username ? (
-                                                <div className="loading-spinner-small" />
-                                            ) : (
-                                                'Submit'
-                                            )}
+                                        <input type="text" value={formDataSettings.username} onChange={e => handleInputChangeSettings('username', e.target.value)} className="form-input" placeholder="Enter new username" />
+                                        <button onClick={() => handleSubmitSettings('username')} disabled={isSubmittingSettings.username || !formDataSettings.username.trim()} className="submit-btn">
+                                            {isSubmittingSettings.username ? <div className="loading-spinner-small" /> : 'Submit'}
                                         </button>
                                     </div>
                                 </div>
-
                                 <div className="form-group">
                                     <label className="form-label">Change School Name</label>
                                     <div className="form-input-group">
-                                        <input
-                                            type="text"
-                                            value={formData.schoolName}
-                                            onChange={(e) => handleInputChange('schoolName', e.target.value)}
-                                            className="form-input"
-                                            placeholder="Enter school name"
-                                        />
-                                        <button
-                                            onClick={() => handleSubmit('schoolName')}
-                                            disabled={isSubmitting.schoolName || !formData.schoolName.trim()}
-                                            className="submit-btn"
-                                        >
-                                            {isSubmitting.schoolName ? (
-                                                <div className="loading-spinner-small" />
-                                            ) : (
-                                                'Submit'
-                                            )}
+                                        <input type="text" value={formDataSettings.schoolName} onChange={e => handleInputChangeSettings('schoolName', e.target.value)} className="form-input" placeholder="Enter school name" />
+                                        <button onClick={() => handleSubmitSettings('schoolName')} disabled={isSubmittingSettings.schoolName || !formDataSettings.schoolName.trim()} className="submit-btn">
+                                            {isSubmittingSettings.schoolName ? <div className="loading-spinner-small" /> : 'Submit'}
                                         </button>
                                     </div>
                                 </div>
-
                                 <div className="form-group">
                                     <label className="form-label">Change Level</label>
                                     <div className="form-input-group">
-                                        <input
-                                            type="text"
-                                            value={formData.level}
-                                            onChange={(e) => handleInputChange('level', e.target.value)}
-                                            className="form-input"
-                                            placeholder="Enter level"
-                                        />
-                                        <button
-                                            onClick={() => handleSubmit('level')}
-                                            disabled={isSubmitting.level || !formData.level.trim()}
-                                            className="submit-btn"
-                                        >
-                                            {isSubmitting.level ? (
-                                                <div className="loading-spinner-small" />
-                                            ) : (
-                                                'Submit'
-                                            )}
+                                        <input type="text" value={formDataSettings.level} onChange={e => handleInputChangeSettings('level', e.target.value)} className="form-input" placeholder="Enter level" />
+                                        <button onClick={() => handleSubmitSettings('level')} disabled={isSubmittingSettings.level || !formDataSettings.level.trim()} className="submit-btn">
+                                            {isSubmittingSettings.level ? <div className="loading-spinner-small" /> : 'Submit'}
                                         </button>
                                     </div>
                                 </div>
-
                                 <div className="form-group">
                                     <label className="form-label">Bio</label>
                                     <div className="form-input-group bio-group">
-                    <textarea
-                        value={formData.bio}
-                        onChange={(e) => handleInputChange('bio', e.target.value)}
-                        className="form-textarea"
-                        placeholder="Tell us about yourself"
-                        rows={4}
-                    />
-                                        <button
-                                            onClick={() => handleSubmit('bio')}
-                                            disabled={isSubmitting.bio || !formData.bio.trim()}
-                                            className="submit-btn bio-submit"
-                                        >
-                                            {isSubmitting.bio ? (
-                                                <div className="loading-spinner-small" />
-                                            ) : (
-                                                'Submit'
-                                            )}
+                                        <textarea value={formDataSettings.bio} onChange={e => handleInputChangeSettings('bio', e.target.value)} className="form-textarea" placeholder="Tell us about yourself" rows={4} />
+                                        <button onClick={() => handleSubmitSettings('bio')} disabled={isSubmittingSettings.bio || !formDataSettings.bio.trim()} className="submit-btn bio-submit">
+                                            {isSubmittingSettings.bio ? <div className="loading-spinner-small" /> : 'Submit'}
                                         </button>
                                     </div>
                                 </div>
@@ -248,4 +171,4 @@ const SettingsScreen = () => {
     );
 };
 
-export default SettingsScreen;
+export default Settings;
