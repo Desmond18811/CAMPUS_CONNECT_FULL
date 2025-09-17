@@ -12,7 +12,7 @@ import {
     MessageCircle,
     Edit, X
 } from 'lucide-react';
-import '../styles/HomePage.css'; // Fixed case sensitivity
+import '../styles/HomePage.css';
 import Create from './Create';
 import SettingsComponent from './Settings';
 import animationData from '../assets/onlineLearning.json'
@@ -24,6 +24,21 @@ const Homepage = () => {
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
     const navigate = useNavigate();
+
+    // Function to generate a random color based on the username
+    const generateUserColor = (username) => {
+        // Simple hash function to generate consistent colors for the same username
+        let hash = 0;
+        for (let i = 0; i < username.length; i++) {
+            hash = username.charCodeAt(i) + ((hash << 5) - hash);
+        }
+
+        // Generate hue value (0-360) from the hash
+        const hue = hash % 360;
+
+        // Use a fixed saturation and lightness for consistent appearance
+        return `hsl(${hue}, 70%, 60%)`;
+    };
 
     const handleSearch = () => {
         navigate('/search');
@@ -110,7 +125,7 @@ const Homepage = () => {
                     </div>
 
                     <div className="nav-item" onClick={handleSettings}>
-                        <Settings size={20} color="#2563eb" /> {/* Fixed: Settings instead of Setting */}
+                        <Settings size={20} color="#2563eb" />
                         <span>Settings</span>
                     </div>
                 </nav>
@@ -132,69 +147,73 @@ const Homepage = () => {
                     </div>
                     <div className="lottie-card">
                         <Lottie
-                                                    animationData={animationData}
-                                                    loop={true}
-                                                    className="lottie-animation"
-                                                 /></div>
+                            animationData={animationData}
+                            loop={true}
+                            className="lottie-animation"
+                        />
+                    </div>
                 </div>
 
                 <div className="posts-feed">
-                    {posts.map(post => (
-                        <div key={post.id} className="post-card">
-                            <div className="post-header">
-                                <div className="post-user">
-                                    <div className="user-logo" style={{
-                                        backgroundColor: '#1d4ed8',
-                                        color: 'white',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        fontSize: '12px',
-                                        width: '32px',
-                                        height: '32px',
-                                        borderRadius: '50%'
-                                    }}>
-                                        {post.username.charAt(0).toUpperCase()}
+                    {posts.map(post => {
+                        const userColor = generateUserColor(post.username);
+                        return (
+                            <div key={post.id} className="post-card">
+                                <div className="post-header">
+                                    <div className="post-user">
+                                        <div className="user-logo" style={{
+                                            backgroundColor: userColor,
+                                            color: 'white',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            fontSize: '12px',
+                                            width: '32px',
+                                            height: '32px',
+                                            borderRadius: '50%'
+                                        }}>
+                                            {post.username.charAt(0).toUpperCase()}
+                                        </div>
+                                        <span className="username">{post.username}</span>
                                     </div>
-                                    <span className="username">{post.username}</span>
-                                </div>
-                                <button className="more-options">
-                                    <MoreHorizontal size={20} />
-                                </button>
-                            </div>
-
-                            <div className="document-preview">
-                                <div className="document-placeholder">
-                                    <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <div className="post-content">
-                                <div className="post-time">{post.timeAgo}</div>
-                                <div className="tags">
-                                    {post.tags.map((tag, index) => (
-                                        <div key={index} className={`tag tag-${tag}`} />
-                                    ))}
-                                </div>
-                                <h3 className="post-title">{post.title}</h3>
-                                <div className="post-actions">
-                                    <div className="action-buttons">
-                                        <button className="action-btn">
-                                            <Heart size={20} />
-                                        </button>
-                                        <button className="action-btn">
-                                            <MessageCircle size={20} />
-                                        </button>
-                                    </div>
-                                    <button className="action-btn">
-                                        <Bookmark size={20} />
+                                    <button className="more-options">
+                                        <MoreHorizontal size={20} />
                                     </button>
                                 </div>
+
+                                <div className="document-preview">
+                                    <div className="document-placeholder">
+                                        <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <div className="post-content">
+                                    <div className="post-time">{post.timeAgo}</div>
+                                    <div className="tags">
+                                        {post.tags.map((tag, index) => (
+                                            <div key={index} className={`tag tag-${tag}`} />
+                                        ))}
+                                    </div>
+                                    <h3 className="post-title">{post.title}</h3>
+                                    <div className="post-actions">
+                                        <div className="action-buttons">
+                                            <button className="action-btn">
+                                                <Heart size={20} />
+                                            </button>
+                                            <button className="action-btn">
+                                                <MessageCircle size={20} />
+                                            </button>
+                                        </div>
+                                        <button className="action-btn">
+                                            <Bookmark size={20} />
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
 
