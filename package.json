@@ -1,0 +1,21 @@
+{
+  "name": "campus-connect-fronmtend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/osoba-joshua/campus-connect-fronmtend.git"
+  },
+  "private": true,
+  "dependencies": {
+    "axios": "^1.12.2",
+    "lottie-react": "^2.4.1",
+    "lucide-react": "^0.544.0",
+    "react": "^19.1.1",
+    "react-router-dom": "^7.9.1"
+  }
+}
