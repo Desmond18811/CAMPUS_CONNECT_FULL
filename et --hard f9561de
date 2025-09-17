@@ -1,0 +1,12 @@
+[33m0d18c14[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m Resolved merge conflicts by accepting incoming changes
+[33m195572a[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Resolved merge conflicts by accepting incoming changes
+[33m592ddfb[m Initial commit
+[33mf9561de[m Added new components (Card, How, Notify) and updated styles + hero section
+[33m16a3a71[m Merge pull request #1 from osoba-joshua/Navbar-$-Hero-Section
+[33m127224d[m Update logo to 'CC' for Campus Connect and add dark/light mode toggle feature
+[33md77eecd[m Complete responsive homepage design, improved button styles, and image updates for Navbar-$-Hero-Section
+[33m0b96bf1[m created the other components
+[33m6580229[m Implementing the components
+[33mc271685[m Navbar and Hero Section
+[33m2d2d840[m Initial project setup with Vite React
+[33m93f5098[m Initial commit
