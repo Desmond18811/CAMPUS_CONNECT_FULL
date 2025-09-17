@@ -13,9 +13,7 @@ const Settings = ({ onClose }) => {
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => setProfileImage(e.target.result);
-            reader.readAsDataURL(file);
+            setProfileImage(file);
         }
     };
 
@@ -24,6 +22,12 @@ const Settings = ({ onClose }) => {
     };
 
     const handleSubmitSettings = async (field) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('Please log in to update your profile.');
+            return;
+        }
+
         setIsSubmittingSettings(prev => ({ ...prev, [field]: true }));
         try {
             const formData = new FormData();
@@ -31,19 +35,25 @@ const Settings = ({ onClose }) => {
             formData.append('schoolName', formDataSettings.schoolName);
             formData.append('level', formDataSettings.level);
             formData.append('bio', formDataSettings.bio);
-            if (profileImage && profileImage instanceof File) formData.append('profilePic', profileImage);
+            if (profileImage) formData.append('profilePic', profileImage);
 
             const response = await fetch('https://campcon-test.onrender.com/api/users/profile', {
                 method: 'PUT',
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    // Note: Don't set 'Content-Type' manually with FormData; fetch sets it to multipart/form-data
+                },
                 body: formData,
             });
 
+            const responseData = await response.json();
             if (response.ok) alert(`${field} updated successfully!`);
-            else throw new Error('Failed to update profile');
+            else {
+                throw new Error(responseData.message || 'Failed to update profile');
+            }
         } catch (error) {
-            alert(`Failed to update ${field}`);
-            console.log(error);
+            console.error('Submit error:', error.message, { token }); // Debug token and error
+            alert(`Failed to update ${field}: ${error.message}`);
         } finally {
             setIsSubmittingSettings(prev => ({ ...prev, [field]: false }));
         }
@@ -65,7 +75,6 @@ const Settings = ({ onClose }) => {
     ];
 
     useEffect(() => {
-        // Fetch initial profile data if needed
         const token = localStorage.getItem('token');
         if (token) {
             fetch('https://campcon-test.onrender.com/api/users/profile', {
@@ -80,7 +89,11 @@ const Settings = ({ onClose }) => {
                         bio: data.data.bio || '',
                         profileColor: '#cc002e',
                     });
-                });
+                    if (data.data.profilePic) setProfileImage(data.data.profilePic);
+                })
+                .catch(error => console.log('Error fetching profile:', error.message, { token }));
+        } else {
+            console.log('No token found, profile data not fetched.');
         }
     }, []);
 
@@ -112,7 +125,13 @@ const Settings = ({ onClose }) => {
                             <div className="profile-card">
                                 <div className="profile-info">
                                     <div className="avatar-large">
-                                        {profileImage ? <img src={profileImage} alt="Profile" className="profile-image-large" /> : (
+                                        {profileImage ? (
+                                            typeof profileImage === 'string' ? (
+                                                <img src={profileImage} alt="Profile" className="profile-image-large" />
+                                            ) : (
+                                                <img src={URL.createObjectURL(profileImage)} alt="Profile" className="profile-image-large" />
+                                            )
+                                        ) : (
                                             <div className="avatar-inner-large" style={{ backgroundColor: formDataSettings.profileColor, color: 'white', fontSize: '24px', fontWeight: 'bold' }}>
                                                 {formDataSettings.username.charAt(0).toUpperCase() || 'U'}
                                             </div>

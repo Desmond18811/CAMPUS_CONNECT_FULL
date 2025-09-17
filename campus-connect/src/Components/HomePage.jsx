@@ -67,6 +67,7 @@ const Homepage = () => {
         { id: 5, username: "User is desmond", timeAgo: "Posted 1s ago", title: "Document Title", tags: ['red', 'blue', 'orange', 'green'] },
         { id: 6, username: "User is black", timeAgo: "Posted 1s ago", title: "Document Title", tags: ['purple', 'red', 'orange', 'yellow'] },
         { id: 7, username: "User is fat", timeAgo: "Posted 1s ago", title: "Document Title", tags: ['red', 'blue', 'orange', 'green'] },
+        { id: 8, username: "DaVid", timeAgo: "Posted 1s ago", title: "Document Title", tags: ['purple', 'red', 'orange', 'yellow'] },
     ];
 
     return (
