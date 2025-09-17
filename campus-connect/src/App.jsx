@@ -10,6 +10,7 @@ import Notifications from "./Components/Notifications.jsx";
 import Create from "./Components/Create.jsx";
 import Explore from "./Components/Explore.jsx";
 import Settings from "./Components/Settings.jsx"
+import ForgotPassWord from "./Components/ForgotPassword.jsx";
 
 function App() {
     return (
@@ -18,6 +19,7 @@ function App() {
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/forgot-password" element={<ForgotPassWord/>}/>
                 <Route path="/home" element={<HomePage />} />
                 <Route path="/liked" element={<Liked/>} />
                 <Route path="/search" element={<Search/>} />
