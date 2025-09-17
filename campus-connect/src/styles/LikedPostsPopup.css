@@ -1,6 +1,6 @@
-/* SettingsScreen.css */
+/* LikedPostsPopup.css */
 
-.settings-container {
+.liked-posts-container {
     position: fixed;
     top: 0;
     left: 0;
@@ -13,7 +13,7 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }
 
-.open-settings-button {
+.open-liked-posts-button {
     background-color: #2563eb;
     color: white;
     padding: 15px 30px;
@@ -25,11 +25,11 @@
     transition: background-color 0.2s;
 }
 
-.open-settings-button:hover {
+.open-liked-posts-button:hover {
     background-color: #1d4ed8;
 }
 
-.settings-backdrop {
+.liked-posts-backdrop {
     position: fixed;
     top: 0;
     left: 0;
@@ -39,7 +39,7 @@
     z-index: 40;
 }
 
-.settings-modal {
+.liked-posts-modal {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -55,13 +55,13 @@
     overflow: hidden;
 }
 
-.settings-layout {
+.liked-posts-layout {
     display: flex;
     height: 100%;
 }
 
 /* Left Sidebar */
-.settings-sidebar {
+.liked-posts-sidebar {
     width: 320px;
     padding: 32px 24px;
     background-color: #fafafa;
@@ -69,7 +69,7 @@
     overflow-y: auto;
 }
 
-.settings-title {
+.liked-posts-title {
     font-size: 28px;
     font-weight: 700;
     color: #111827;
@@ -83,7 +83,7 @@
 .menu-category {
     font-size: 14px;
     font-weight: 600;
-    color: #2e82ff;
+    color: #6b7280;
     margin: 0 0 16px 0;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -100,7 +100,7 @@
     border-radius: 12px;
     font-size: 16px;
     font-weight: 500;
-    color: #2e82ff;
+    color: #374151;
     cursor: pointer;
     transition: all 0.2s;
     margin-bottom: 4px;
@@ -108,32 +108,32 @@
 }
 
 .menu-item:hover {
-    background-color: #2e82ff;
+    background-color: #e5e7eb;
 }
 
 .menu-item.active {
-    background-color: #2e82ff;
+    background-color: #e5e7eb;
     color: #111827;
 }
 
 .menu-icon {
     width: 20px;
     height: 20px;
-    color: #2e82ff;
+    color: #6b7280;
 }
 
 .menu-item.active .menu-icon {
-    color: #256cff;
+    color: #374151;
 }
 
 /* Vertical Divider */
-.settings-divider {
+.liked-posts-divider {
     width: 1px;
-    background-color: #256cff;
+    background-color: #e5e7eb;
 }
 
 /* Right Content */
-.settings-content {
+.liked-posts-content {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -177,204 +177,208 @@
     height: 24px;
 }
 
-/* Profile Section */
-.profile-section {
-    padding: 40px;
+/* Posts Grid */
+.posts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    padding: 24px 40px 40px 40px;
 }
 
-.profile-card {
+.liked-post-card {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+}
+
+.liked-post-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Post Header */
+.liked-post-header {
+    padding: 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 24px;
-    background-color: #f9fafb;
-    border-radius: 20px;
-    margin-bottom: 40px;
+    border-bottom: 1px solid #f3f4f6;
 }
 
-.profile-info {
+.post-user {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
 }
 
-.avatar-large {
-    width: 64px;
-    height: 64px;
-    background-color: #ffffff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #e5e7eb;
-}
-
-.avatar-inner-large {
-    width: 48px;
-    height: 48px;
-    border: 2px solid #9ca3af;
-    border-radius: 50%;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.avatar-x1-large,
-.avatar-x2-large {
-    position: absolute;
-    width: 32px;
-    height: 2px;
-    background-color: #9ca3af;
-}
-
-.avatar-x1-large {
-    transform: rotate(45deg);
-}
-
-.avatar-x2-large {
-    transform: rotate(-45deg);
-}
-
-.profile-username {
-    font-size: 20px;
-    font-weight: 600;
-    color: #111827;
-}
-
-.edit-profile-btn {
-    background-color: #2563eb;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 12px;
-    font-weight: 500;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.2s;
-}
-
-.edit-profile-btn:hover {
+.user-avatar {
+    width: 24px;
+    height: 24px;
     background-color: #1d4ed8;
-}
-
-/* Form Section */
-.form-section {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.form-label {
-    font-size: 18px;
-    font-weight: 600;
-    color: #111827;
-    margin: 0;
-}
-
-.form-input-group {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-}
-
-.form-input,
-.form-textarea {
-    flex: 1;
-    padding: 16px 20px;
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    font-size: 16px;
-    color: #374151;
-    background-color: white;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    font-family: inherit;
-}
-
-.form-input:focus,
-.form-textarea:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.form-textarea {
-    resize: vertical;
-    min-height: 120px;
-}
-
-.submit-btn {
-    background-color: #2e82ff;
-    color: white;
-    padding: 16px 24px;
-    border-radius: 12px;
-    font-weight: 500;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.2s;
-    white-space: nowrap;
-    min-width: 100px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+    color: white;
 }
 
-.submit-btn:hover:not(:disabled) {
-    background-color: #256cff;
+.username {
+    font-weight: 500;
+    color: #111827;
+    font-size: 14px;
 }
 
-.submit-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+.more-options {
+    padding: 4px;
+    background: none;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #6b7280;
+    transition: background-color 0.2s;
 }
 
-.bio-group {
-    align-items: flex-end;
+.more-options:hover {
+    background-color: #f3f4f6;
 }
 
-.bio-submit {
-    align-self: flex-end;
+/* Document Preview */
+.document-preview {
+    padding: 20px;
+    background-color: #f9fafb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 140px;
 }
 
-.loading-spinner-small {
+.document-placeholder {
+    background-color: white;
+    border-radius: 8px;
+    border: 2px dashed #e5e7eb;
+    width: 100%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #d1d5db;
+}
+
+/* Post Footer */
+.liked-post-footer {
+    padding: 16px;
+}
+
+.post-time {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.tags {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.tag {
     width: 16px;
     height: 16px;
-    border: 2px solid white;
-    border-top: 2px solid transparent;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.tag-red {
+    background-color: #ef4444;
+}
+
+.tag-blue {
+    background-color: #3b82f6;
+}
+
+.tag-orange {
+    background-color: #f97316;
+}
+
+.tag-green {
+    background-color: #10b981;
+}
+
+.tag-purple {
+    background-color: #8b5cf6;
+}
+
+.tag-yellow {
+    background-color: #fbbf24;
+}
+
+.post-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 12px;
+}
+
+.post-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    padding: 6px;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    color: #6b7280;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.action-btn:hover {
+    background-color: #f3f4f6;
+}
+
+.action-btn.liked {
+    color: #ef4444;
+}
+
+.action-btn.liked:hover {
+    background-color: #fef2f2;
 }
 
 /* Responsive Design */
 @media (max-width: 1024px) {
-    .settings-modal {
+    .liked-posts-modal {
         width: 98vw;
         height: 95vh;
     }
 
-    .settings-sidebar {
+    .liked-posts-sidebar {
         width: 280px;
+    }
+
+    .posts-grid {
+        grid-template-columns: 1fr;
     }
 }
 
 @media (max-width: 768px) {
-    .settings-layout {
+    .liked-posts-layout {
         flex-direction: column;
     }
 
-    .settings-sidebar {
+    .liked-posts-sidebar {
         width: 100%;
         height: 200px;
         overflow-x: auto;
@@ -392,32 +396,13 @@
     }
 
     .content-header,
-    .profile-section {
+    .posts-grid {
         padding: 24px;
-    }
-
-    .form-input-group {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .bio-group {
-        align-items: stretch;
-    }
-
-    .bio-submit {
-        align-self: stretch;
     }
 }
 
 @media (max-width: 480px) {
-    .settings-modal {
+    .liked-posts-modal {
         border-radius: 16px;
-    }
-
-    .profile-card {
-        flex-direction: column;
-        gap: 16px;
-        text-align: center;
     }
 }

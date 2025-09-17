@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, User, Bell as BellSettings, Heart as HeartSettings, Bookmark as BookmarkSettings, MessageCircle as MessageCircleSettings, HelpCircle, Shield, UserCheck, Image } from 'lucide-react';
+import {useNavigate} from "react-router-dom";
 import '../styles/Settings.css';
 
 const Settings = ({ onClose }) => {
@@ -9,6 +10,7 @@ const Settings = ({ onClose }) => {
     const [profileImage, setProfileImage] = useState(null);
     const [isSubmittingSettings, setIsSubmittingSettings] = useState({ username: false, schoolName: false, level: false, bio: false });
     const [activeSection, setActiveSection] = useState('editProfile');
+const navigate = useNavigate()
 
     const handleImageUpload = (e) => {
         const file = e.target.files[0];

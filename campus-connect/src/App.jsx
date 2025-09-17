@@ -11,6 +11,7 @@ import Create from "./Components/Create.jsx";
 import Explore from "./Components/Explore.jsx";
 import Settings from "./Components/Settings.jsx"
 import ForgotPassWord from "./Components/ForgotPassword.jsx";
+import Comments from "./Components/Comments.jsx";
 
 function App() {
     return (
@@ -28,6 +29,7 @@ function App() {
                 <Route path="/create" element={<Create/>} />
                 <Route path="/explore" element={<Explore/>} />
                 <Route path="/settings" element={<Settings/>} />
+                <Route path="" element={<Comments/>} />
                 <Route path="*" element={<LandingPage />} />
             </Routes>
         </Router>
