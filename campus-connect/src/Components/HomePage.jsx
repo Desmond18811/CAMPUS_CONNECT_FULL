@@ -3,9 +3,20 @@ import { Search, Heart, Bookmark, Bell, Plus, Compass, Settings, LogOut, MoreHor
 import { X, User, Bell as BellSettings, Heart as HeartSettings, Bookmark as BookmarkSettings, MessageCircle as MessageCircleSettings, HelpCircle, Shield, UserCheck, Image, FileText } from 'lucide-react';
 import '../styles/HomePage.css';
 import '../styles/Settings.css';
+import animationData from '../assets/onlineLearning.json';
 import {useNavigate} from "react-router-dom";
+import Lottie from "lottie-react"
 
 const HomePage = () => {
+    const getRandomColors  = () => {
+        const colors = ['#cc002e', '#256cff', '#ffd05b', '#007070', '#9966FF', '#FF9F40', '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#4BC0C0', '#cc002e', '#CCCCCC'];
+        return colors[Math.floor(Math.random() * colors.length)];
+    };
+
+    const getInitial = (name) => {
+        return name ? name.charAt(0).toUpperCase() : 'U';
+    };
+
     const [likedPosts, setLikedPosts] = useState(new Set());
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
@@ -14,8 +25,22 @@ const HomePage = () => {
         username: '',
         schoolName: '',
         level: '',
-        bio: ''
+        bio: '',
+        profileColor: getRandomColors()
     });
+    const [profileImage, setProfileImage] = useState(null);
+
+// Add this handler for image selection
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setProfileImage(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
     const [isSubmittingSettings, setIsSubmittingSettings] = useState({
         username: false,
         schoolName: false,
@@ -278,6 +303,7 @@ const HomePage = () => {
                     <h1>Campus Connect</h1>
                 </div>
 
+
                 {/* Navigation */}
                 <nav className="navigation">
                     <div className="nav-item">
@@ -322,6 +348,7 @@ const HomePage = () => {
                         <LogOut size={20} />
                         <span>Log Out</span>
                     </button>
+
                 </div>
             </div>
 
@@ -336,7 +363,14 @@ const HomePage = () => {
                             placeholder="Search for contents"
                             className="search-input"
                         />
+
                     </div>
+                    <div className="lottie-card">
+                        <Lottie
+                            animationData={animationData}
+                            loop={true}
+                            className="lottie-animation"
+                        /></div>
                 </div>
 
                 {/* Posts Feed */}
@@ -346,7 +380,17 @@ const HomePage = () => {
                             {/* Post Header */}
                             <div className="post-header">
                                 <div className="post-user">
-                                    <div className="user-logo">C</div>
+                                    <div className="user-logo" style={{
+                                        backgroundColor: getRandomColors(),
+                                        color: 'white',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontSize: '14px',
+                                        fontWeight: 'bold'
+                                    }}>
+                                        {getInitial(post.username)}
+                                    </div>
                                     <span className="username">{post.username}</span>
                                 </div>
                                 <button className="more-options">
@@ -401,6 +445,7 @@ const HomePage = () => {
                     ))}
                 </div>
             </div>
+
 
             {/* Floating Action Button */}
             <button className="fab" onClick={handleCreatePost}>
@@ -459,14 +504,47 @@ const HomePage = () => {
                                     <div className="profile-card">
                                         <div className="profile-info">
                                             <div className="avatar-large">
-                                                <div className="avatar-inner-large">
-                                                    <div className="avatar-x1-large" />
-                                                    <div className="avatar-x2-large" />
-                                                </div>
+                                                {profileImage ? (
+                                                    <img
+                                                        src={profileImage}
+                                                        alt="Profile"
+                                                        className="profile-image-large"
+                                                        style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
+                                                    />
+                                                ) : (
+                                                    <div
+                                                        className="avatar-inner-large"
+                                                        style={{
+                                                            backgroundColor: formDataSettings.profileColor,
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            color: 'white',
+                                                            fontSize: '24px',
+                                                            fontWeight: 'bold'
+                                                        }}
+                                                    >
+                                                        {getInitial(formDataSettings.username || 'User')}
+                                                    </div>
+                                                )}
                                             </div>
-                                            <span className="profile-username">@username</span>
+                                            <span className="profile-username">@{formDataSettings.username || 'username'}</span>
                                         </div>
-                                        <button className="edit-profile-btn">Edit Profile</button>
+
+                                        <div className="profile-image-actions">
+                                            <input
+                                                type="file"
+                                                id="profile-image-upload"
+                                                style={{ display: 'none' }}
+                                                accept="image/*"
+                                                onChange={handleImageUpload}
+                                            />
+                                            <label htmlFor="profile-image-upload" className="image-upload-btn">
+                                                <Image size={16} />
+                                                Choose Image
+                                            </label>
+                                            <button className="edit-profile-btn">Edit Profile</button>
+                                        </div>
                                     </div>
 
                                     {/* Form Fields */}
@@ -583,10 +661,28 @@ const HomePage = () => {
                         <div className="header">
                             <div className="user-info">
                                 <div className="avatar">
-                                    <div className="avatar-inner">
-                                        <div className="avatar-x1" />
-                                        <div className="avatar-x2" />
-                                    </div>
+                                    {profileImage ? (
+                                        <img
+                                            src={profileImage}
+                                            alt="Profile"
+                                            style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
+                                        />
+                                    ) : (
+                                        <div
+                                            className="avatar-inner"
+                                            style={{
+                                                backgroundColor: formDataSettings.profileColor,
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                color: 'white',
+                                                fontSize: '14px',
+                                                fontWeight: 'bold'
+                                            }}
+                                        >
+                                            {getInitial(formDataSettings.username || 'User')}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="username">
                                     <span>@username</span>
