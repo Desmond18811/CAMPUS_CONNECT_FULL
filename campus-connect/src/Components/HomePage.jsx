@@ -15,7 +15,7 @@ import {
 import '../styles/HomePage.css';
 import Create from './Create';
 import SettingsComponent from './Settings';
-import animationData from '../assets/onlineLearning.json'
+import animationData from '../assets/onlineLearning.json';
 import { useNavigate } from 'react-router-dom';
 import Lottie from "lottie-react";
 
@@ -25,39 +25,29 @@ const Homepage = () => {
     const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
     const navigate = useNavigate();
 
-    // Function to generate a random color based on the username
     const generateUserColor = (username) => {
-        // Simple hash function to generate consistent colors for the same username
         let hash = 0;
         for (let i = 0; i < username.length; i++) {
             hash = username.charCodeAt(i) + ((hash << 5) - hash);
         }
-
-        // Generate hue value (0-360) from the hash
         const hue = hash % 360;
-
-        // Use a fixed saturation and lightness for consistent appearance
         return `hsl(${hue}, 70%, 60%)`;
     };
 
     const handleSearch = () => {
         navigate('/search');
-        console.log('Navigate to Search');
     };
 
     const handleLikedPost = () => {
-        navigate('/liked');
-        console.log('Navigate to Liked Posts');
+        navigate('/likedPosts');
     };
 
     const handleSavedPosts = () => {
         navigate('/saved');
-        console.log('Navigate to Saved Posts');
     };
 
     const handleNotifications = () => {
         navigate('/notifications');
-        console.log('Navigate to Notifications');
     };
 
     const handleCreatePost = () => {
@@ -65,14 +55,18 @@ const Homepage = () => {
         setIsCreatePostOpen(true);
     };
 
-    const handleExplore = () => console.log('Navigate to Explore');
+    const handleExplore = () => {
+        navigate('/explore');
+    };
 
     const handleSettings = () => {
         setSidebarOpen(false);
         setIsSettingsOpen(true);
     };
 
-    const handleLogOut = () => console.log('Navigate to Sign Up');
+    const handleLogOut = () => {
+        navigate('/login');
+    };
 
     const posts = [
         { id: 1, username: "Osoba's balls", timeAgo: "Posted 1s ago", title: "Document Title", tags: ['red', 'blue', 'orange', 'green'] },
@@ -87,7 +81,6 @@ const Homepage = () => {
 
     return (
         <div className="campus-connect">
-            {/* Sidebar */}
             <div className={`sidebar ${!sidebarOpen ? 'closed' : ''}`} style={{ display: sidebarOpen ? 'flex' : 'none' }}>
                 <div className="sidebar-header">
                     <h1>Campus Connect</h1>
@@ -138,7 +131,6 @@ const Homepage = () => {
                 </div>
             </div>
 
-            {/* Main Content */}
             <div className="main-content">
                 <div className="search-container">
                     <div className="search-bar">
@@ -217,16 +209,15 @@ const Homepage = () => {
                 </div>
             </div>
 
-            {/* Floating Action Button */}
             <button className="fab" onClick={handleCreatePost}>
                 <Edit size={24} />
             </button>
 
-            {/* Modals */}
             {isSettingsOpen && (
                 <SettingsComponent onClose={() => {
                     setIsSettingsOpen(false);
                     setSidebarOpen(true);
+                    navigate('/home');
                 }} />
             )}
 
@@ -234,6 +225,7 @@ const Homepage = () => {
                 <Create onClose={() => {
                     setIsCreatePostOpen(false);
                     setSidebarOpen(true);
+                    navigate('/home');
                 }} />
             )}
         </div>
@@ -241,3 +233,4 @@ const Homepage = () => {
 };
 
 export default Homepage;
+

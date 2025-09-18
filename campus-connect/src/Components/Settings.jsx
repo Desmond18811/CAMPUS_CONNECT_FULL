@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, User, Bell as BellSettings, Heart as HeartSettings, Bookmark as BookmarkSettings, MessageCircle as MessageCircleSettings, HelpCircle, Shield, UserCheck, Image } from 'lucide-react';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import '../styles/Settings.css';
 
 const Settings = ({ onClose }) => {
@@ -10,7 +10,7 @@ const Settings = ({ onClose }) => {
     const [profileImage, setProfileImage] = useState(null);
     const [isSubmittingSettings, setIsSubmittingSettings] = useState({ username: false, schoolName: false, level: false, bio: false });
     const [activeSection, setActiveSection] = useState('editProfile');
-const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
@@ -43,7 +43,6 @@ const navigate = useNavigate()
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
-                    // Note: Don't set 'Content-Type' manually with FormData; fetch sets it to multipart/form-data
                 },
                 body: formData,
             });
@@ -54,7 +53,7 @@ const navigate = useNavigate()
                 throw new Error(responseData.message || 'Failed to update profile');
             }
         } catch (error) {
-            console.error('Submit error:', error.message, { token }); // Debug token and error
+            console.error('Submit error:', error.message, { token });
             alert(`Failed to update ${field}: ${error.message}`);
         } finally {
             setIsSubmittingSettings(prev => ({ ...prev, [field]: false }));
@@ -101,7 +100,7 @@ const navigate = useNavigate()
 
     return (
         <div className="settings-container">
-            <div className="settings-backdrop" onClick={onClose} />
+            <div className="settings-backdrop" onClick={() => navigate('/home')} />
             <div className="settings-modal">
                 <div className="settings-layout">
                     <div className="settings-sidebar">
@@ -110,9 +109,24 @@ const navigate = useNavigate()
                             <div key={index} className="menu-section">
                                 {section.category && <h3 className="menu-category">{section.category}</h3>}
                                 {section.items.map(item => (
-                                    <button key={item.id} onClick={() => setActiveSection(item.id)} className={`menu-item ${item.active || activeSection === item.id ? 'active' : ''}`}>
-                                        <item.icon className="menu-icon" />{item.label}
-                                    </button>
+                                    <div
+                                        key={item.id}
+                                        onClick={() => {
+                                            setActiveSection(item.id);
+                                            if (item.id === 'notifications') navigate('/notifications');
+                                            else if (item.id === 'likedPosts') navigate('/likedPosts');
+                                            else if (item.id === 'savedPosts') navigate('/saved');
+                                            else if (item.id === 'comments') navigate('/comments');
+                                            else if (item.id === 'help') navigate('/help');
+                                            else if (item.id === 'privacySupport') navigate('/privacy-support');
+                                            else if (item.id === 'accountStatus') navigate('/account-status');
+                                            else if (item.id === 'editProfile') navigate('/settings'); // Keeping edit profile within settings
+                                        }}
+                                        className={`menu-item ${item.active || activeSection === item.id ? 'active' : ''}`}
+                                    >
+                                        <item.icon className="menu-icon" />
+                                        {item.label}
+                                    </div>
                                 ))}
                             </div>
                         ))}
@@ -121,7 +135,7 @@ const navigate = useNavigate()
                     <div className="settings-content">
                         <div className="content-header">
                             <h2 className="content-title">Edit Profile</h2>
-                            <button onClick={onClose} className="close-button"><X /></button>
+                            <button onClick={() => navigate('/home')} className="close-button"><X /></button>
                         </div>
                         <div className="profile-section">
                             <div className="profile-card">

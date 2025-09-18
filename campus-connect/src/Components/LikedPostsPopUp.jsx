@@ -3,8 +3,8 @@ import { X, User, Bell, Heart, Bookmark, MessageCircle, HelpCircle, Shield, User
 import { useNavigate } from 'react-router-dom';
 import '../styles/LikedPostsPopup.css';
 
-const Saved = () => {
-    const [activeSection, setActiveSection] = useState('savedPosts');
+const LikedPostsPopup = () => {
+    const [activeSection, setActiveSection] = useState('likedPosts');
     const navigate = useNavigate();
 
     const menuItems = [
@@ -23,8 +23,8 @@ const Saved = () => {
         {
             category: 'How others can interact with you',
             items: [
-                { id: 'likedPosts', label: 'Liked Posts', icon: Heart },
-                { id: 'savedPosts', label: 'Saved Posts', icon: Bookmark, active: true },
+                { id: 'likedPosts', label: 'Liked Posts', icon: Heart, active: true },
+                { id: 'savedPosts', label: 'Saved Posts', icon: Bookmark },
                 { id: 'comments', label: 'Comments', icon: MessageCircle }
             ]
         },
@@ -71,7 +71,7 @@ const Saved = () => {
 
     return (
         <div className="liked-posts-container">
-            <div className="liked-posts-backdrop" onClick={() => navigate('/home')} />
+            <div className="liked-posts-backdrop" onClick={() => { navigate('/home'); }} />
 
             <div className="liked-posts-modal">
                 <div className="liked-posts-layout">
@@ -111,7 +111,7 @@ const Saved = () => {
 
                     <div className="liked-posts-content">
                         <div className="content-header">
-                            <h2 className="content-title">Saved Posts</h2>
+                            <h2 className="content-title">Liked Posts</h2>
                             <button
                                 onClick={() => navigate('/home')}
                                 className="close-button"
@@ -156,15 +156,15 @@ const Saved = () => {
 
                                         <div className="post-actions">
                                             <div className="action-buttons">
-                                                <button className="action-btn">
-                                                    <Heart size={18} />
+                                                <button className="action-btn liked">
+                                                    <Heart size={18} fill="currentColor" />
                                                 </button>
                                                 <button className="action-btn">
                                                     <MessageCircle size={18} />
                                                 </button>
                                             </div>
                                             <button className="action-btn">
-                                                <Bookmark size={18} fill="currentColor" />
+                                                <Bookmark size={18} />
                                             </button>
                                         </div>
                                     </div>
@@ -178,4 +178,4 @@ const Saved = () => {
     );
 };
 
-export default Saved;
+export default LikedPostsPopup;

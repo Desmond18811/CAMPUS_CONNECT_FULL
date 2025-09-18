@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { X, User, Bell, Heart, Bookmark, MessageCircle, HelpCircle, Shield, UserCheck } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/NotificationsPopup.css';
 
-const Notifications = () => {
+const NotificationsPopup = () => {
     const [activeSection, setActiveSection] = useState('notifications');
+    const navigate = useNavigate();
 
     const menuItems = [
         {
@@ -99,15 +101,12 @@ const Notifications = () => {
         ]
     };
 
-
-
     return (
         <div className="notifications-container">
-            <div className="notifications-backdrop"  />
+            <div className="notifications-backdrop" onClick={() => navigate('/home')} />
 
             <div className="notifications-modal">
                 <div className="notifications-layout">
-                    {/* Left Sidebar */}
                     <div className="notifications-sidebar">
                         <h2 className="notifications-title">Settings</h2>
 
@@ -119,7 +118,17 @@ const Notifications = () => {
                                 {section.items.map((item) => (
                                     <button
                                         key={item.id}
-                                        onClick={() => setActiveSection(item.id)}
+                                        onClick={() => {
+                                            setActiveSection(item.id);
+                                            if (item.id === 'notifications') navigate('/notifications');
+                                            else if (item.id === 'likedPosts') navigate('/likedPosts');
+                                            else if (item.id === 'savedPosts') navigate('/saved');
+                                            else if (item.id === 'comments') navigate('/comments');
+                                            else if (item.id === 'help') navigate('/help');
+                                            else if (item.id === 'privacySupport') navigate('/privacy-support');
+                                            else if (item.id === 'accountStatus') navigate('/account-status');
+                                            else if (item.id === 'editProfile') navigate('/settings');
+                                        }}
                                         className={`menu-item ${item.active || activeSection === item.id ? 'active' : ''}`}
                                     >
                                         <item.icon className="menu-icon" />
@@ -130,14 +139,13 @@ const Notifications = () => {
                         ))}
                     </div>
 
-                    {/* Vertical Divider */}
                     <div className="notifications-divider"></div>
 
-                    {/* Right Content */}
                     <div className="notifications-content">
                         <div className="content-header">
                             <h2 className="content-title">Notifications</h2>
                             <button
+                                onClick={() => navigate('/home')}
                                 className="close-button"
                             >
                                 <X />
@@ -145,7 +153,6 @@ const Notifications = () => {
                         </div>
 
                         <div className="notifications-section">
-                            {/* This Week */}
                             <div className="time-section">
                                 <h3 className="time-heading">THIS WEEK</h3>
                                 {notifications.thisWeek.map((notification) => (
@@ -165,7 +172,6 @@ const Notifications = () => {
                                 ))}
                             </div>
 
-                            {/* This Month */}
                             <div className="time-section">
                                 <h3 className="time-heading">THIS MONTH</h3>
                                 {notifications.thisMonth.map((notification) => (
@@ -185,7 +191,6 @@ const Notifications = () => {
                                 ))}
                             </div>
 
-                            {/* Previous */}
                             <div className="time-section">
                                 <h3 className="time-heading">PREVIOUS</h3>
                                 {notifications.previous.map((notification) => (
@@ -212,4 +217,4 @@ const Notifications = () => {
     );
 };
 
-export default Notifications;
+export default NotificationsPopup;

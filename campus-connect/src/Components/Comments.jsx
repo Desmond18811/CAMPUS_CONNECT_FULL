@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { X, User, Bell, Heart, Bookmark, MessageCircle, HelpCircle, Shield, UserCheck } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/CommentsPopup.css';
 
 const CommentsPopup = () => {
-    const [isOpen, setIsOpen] = useState(false);
     const [activeSection, setActiveSection] = useState('comments');
+    const navigate = useNavigate();
 
     const menuItems = [
         {
@@ -64,26 +65,12 @@ const CommentsPopup = () => {
         }
     ];
 
-    if (!isOpen) {
-        return (
-            <div className="comments-container">
-                <button
-                    onClick={() => setIsOpen(true)}
-                    className="open-comments-button"
-                >
-                    Open Comments
-                </button>
-            </div>
-        );
-    }
-
     return (
         <div className="comments-container">
-            <div className="comments-backdrop" onClick={() => setIsOpen(false)} />
+            <div className="comments-backdrop" onClick={() => navigate('/home')} />
 
             <div className="comments-modal">
                 <div className="comments-layout">
-                    {/* Left Sidebar */}
                     <div className="comments-sidebar">
                         <h2 className="comments-title">Settings</h2>
 
@@ -95,7 +82,17 @@ const CommentsPopup = () => {
                                 {section.items.map((item) => (
                                     <button
                                         key={item.id}
-                                        onClick={() => setActiveSection(item.id)}
+                                        onClick={() => {
+                                            setActiveSection(item.id);
+                                            if (item.id === 'notifications') navigate('/notifications');
+                                            else if (item.id === 'likedPosts') navigate('/likedPosts');
+                                            else if (item.id === 'savedPosts') navigate('/saved');
+                                            else if (item.id === 'comments') navigate('/comments');
+                                            else if (item.id === 'help') navigate('/help');
+                                            else if (item.id === 'privacySupport') navigate('/privacy-support');
+                                            else if (item.id === 'accountStatus') navigate('/account-status');
+                                            else if (item.id === 'editProfile') navigate('/settings');
+                                        }}
                                         className={`menu-item ${item.active || activeSection === item.id ? 'active' : ''}`}
                                     >
                                         <item.icon className="menu-icon" />
@@ -106,15 +103,13 @@ const CommentsPopup = () => {
                         ))}
                     </div>
 
-                    {/* Vertical Divider */}
                     <div className="comments-divider"></div>
 
-                    {/* Right Content */}
                     <div className="comments-content">
                         <div className="content-header">
                             <h2 className="content-title">Comments</h2>
                             <button
-                                onClick={() => setIsOpen(false)}
+                                onClick={() => navigate('/home')}
                                 className="close-button"
                             >
                                 <X />
