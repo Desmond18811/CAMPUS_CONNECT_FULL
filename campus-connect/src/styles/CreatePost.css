@@ -1,6 +1,6 @@
-/* DocumentPostPopup.css */
+/* CreateDocumentPage.css */
 
-.container {
+.create-document-container {
     position: fixed;
     top: 0;
     left: 0;
@@ -10,11 +10,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }
 
-.open-button {
+.open-create-button {
     background-color: #2563eb;
     color: white;
     padding: 15px 30px;
@@ -24,17 +23,13 @@
     cursor: pointer;
     font-size: 18px;
     transition: background-color 0.2s;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
 }
 
-.open-button:hover {
+.open-create-button:hover {
     background-color: #1d4ed8;
 }
 
-.backdrop {
+.create-backdrop {
     position: fixed;
     top: 0;
     left: 0;
@@ -44,7 +39,7 @@
     z-index: 40;
 }
 
-.popup {
+.create-modal {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -54,17 +49,21 @@
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     width: 90vw;
     max-width: 800px;
-    min-height: 600px;
+    min-height: 700px;
     z-index: 50;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
-.header {
+/* Header */
+.create-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 32px 40px 24px 40px;
     border-bottom: 1px solid #f3f4f6;
+    flex-shrink: 0;
 }
 
 .user-info {
@@ -73,7 +72,7 @@
     gap: 16px;
 }
 
-.avatar {
+.user-avatar {
     width: 56px;
     height: 56px;
     background-color: #f3f4f6;
@@ -81,11 +80,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    border: 1px solid #e5e7eb;
 }
 
 .avatar-inner {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border: 2px solid #9ca3af;
     border-radius: 50%;
     position: relative;
@@ -110,22 +110,25 @@
     transform: rotate(-45deg);
 }
 
-.username {
+.username-section {
     display: flex;
     align-items: center;
-    color: #6b7280;
-    font-weight: 500;
+    gap: 8px;
+}
+
+.username {
     font-size: 18px;
+    font-weight: 600;
+    color: #111827;
 }
 
 .dropdown-icon {
     width: 18px;
     height: 18px;
-    margin-left: 10px;
     color: #9ca3af;
 }
 
-.close-button {
+.close-btn {
     padding: 12px;
     background: none;
     border: none;
@@ -138,41 +141,45 @@
     justify-content: center;
 }
 
-.close-button:hover {
+.close-btn:hover {
     background-color: #f3f4f6;
 }
 
-.close-button svg {
+.close-btn svg {
     width: 24px;
     height: 24px;
 }
 
-.content {
+/* Content */
+.create-content {
     padding: 40px;
-    height: calc(100% - 120px);
+    flex: 1;
     display: flex;
     flex-direction: column;
+    gap: 32px;
 }
 
+/* Title Section */
 .title-section {
-    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
     flex: 1;
 }
 
-.title-section h3 {
+.section-title {
     font-size: 22px;
     font-weight: 600;
     color: #111827;
-    margin-bottom: 20px;
-    margin-top: 0;
+    margin: 0;
 }
 
-.title-input {
+.title-textarea {
     width: 100%;
     min-height: 200px;
-    padding: 20px;
+    padding: 24px;
     border: 1px solid #e5e7eb;
-    border-radius: 20px;
+    border-radius: 24px;
     resize: none;
     font-family: inherit;
     font-size: 16px;
@@ -183,47 +190,51 @@
     box-sizing: border-box;
 }
 
-.title-input:focus {
+.title-textarea:focus {
     border-color: #3b82f6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-.title-input::placeholder {
+.title-textarea::placeholder {
     color: #9ca3af;
+    font-style: italic;
 }
 
+/* Filters Section */
 .filters-section {
-    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-.add-filter-button {
+.add-filters-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
-    color: #6b7280;
+    padding: 16px 24px;
     background: white;
     border: 1px solid #e5e7eb;
-    border-radius: 20px;
-    padding: 16px 20px;
-    width: 100%;
-    cursor: pointer;
+    border-radius: 24px;
+    color: #6b7280;
     font-size: 16px;
-    transition: color 0.2s, border-color 0.2s;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
 }
 
-.add-filter-button:hover {
-    color: #374151;
+.add-filters-btn:hover {
     border-color: #d1d5db;
+    background-color: #f9fafb;
 }
 
-.add-filter-button svg {
+.plus-icon {
     width: 20px;
     height: 20px;
 }
 
-.filters-container {
-    margin-top: 16px;
+.filters-list {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
@@ -232,46 +243,40 @@
 .filter-tag {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     background-color: #dbeafe;
     color: #1e40af;
     padding: 8px 16px;
-    border-radius: 24px;
+    border-radius: 20px;
     font-size: 14px;
+    font-weight: 500;
 }
 
-.filter-remove {
+.remove-filter {
     background: none;
     border: none;
     cursor: pointer;
     color: #1e40af;
     padding: 2px;
     border-radius: 50%;
-    margin-left: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
+    transition: background-color 0.2s;
 }
 
-.filter-remove:hover {
+.remove-filter:hover {
     background-color: #bfdbfe;
 }
 
-.filter-remove svg {
-    width: 14px;
-    height: 14px;
-}
-
-.media-icons {
+/* Media Section */
+.media-section {
     display: flex;
     align-items: center;
-    gap: 20px;
-    margin-bottom: 32px;
+    gap: 16px;
 }
 
-.media-button {
+.media-btn {
     padding: 12px;
     background: none;
     border: none;
@@ -284,30 +289,26 @@
     justify-content: center;
 }
 
-.media-button:hover {
+.media-btn:hover {
     background-color: #f3f4f6;
 }
 
-.media-button svg {
-    width: 28px;
-    height: 28px;
-}
-
+/* Post Section */
 .post-section {
     display: flex;
     justify-content: flex-end;
     margin-top: auto;
 }
 
-.post-button {
+.post-btn {
     background-color: #2563eb;
     color: white;
-    padding: 16px 40px;
-    border-radius: 32px;
-    font-weight: 500;
+    padding: 16px 48px;
+    border-radius: 24px;
+    font-weight: 600;
+    font-size: 16px;
     border: none;
     cursor: pointer;
-    font-size: 16px;
     transition: background-color 0.2s;
     min-width: 120px;
     display: flex;
@@ -315,18 +316,19 @@
     justify-content: center;
 }
 
-.post-button:hover:not(:disabled) {
+.post-btn:hover:not(:disabled) {
     background-color: #1d4ed8;
 }
 
-.post-button:disabled {
-    opacity: 0.5;
+.post-btn:disabled {
+    opacity: 0.6;
     cursor: not-allowed;
 }
 
+/* Loading Spinner */
 .loading-spinner {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     border: 2px solid white;
     border-top: 2px solid transparent;
     border-radius: 50%;
@@ -338,7 +340,8 @@
     100% { transform: rotate(360deg); }
 }
 
-.success-message {
+/* Success Toast */
+.success-toast {
     position: fixed;
     top: 24px;
     right: 24px;
@@ -349,37 +352,70 @@
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     z-index: 60;
     font-size: 16px;
+    font-weight: 500;
 }
 
-/* Responsive design */
+/* Responsive Design */
 @media (max-width: 768px) {
-    .popup {
+    .create-modal {
         width: 95vw;
-        min-height: 500px;
+        min-height: 600px;
+        border-radius: 24px;
     }
 
-    .header,
-    .content {
+    .create-header,
+    .create-content {
         padding: 24px;
     }
 
-    .title-input {
-        min-height: 150px;
+    .create-content {
+        gap: 24px;
     }
 
-    .title-section h3 {
+    .title-textarea {
+        min-height: 150px;
+        padding: 20px;
+    }
+
+    .section-title {
         font-size: 20px;
     }
 }
 
 @media (max-width: 480px) {
-    .popup {
+    .create-modal {
         width: 98vw;
         border-radius: 20px;
     }
 
-    .header,
-    .content {
+    .create-header,
+    .create-content {
         padding: 20px;
+    }
+
+    .user-avatar {
+        width: 48px;
+        height: 48px;
+    }
+
+    .avatar-inner {
+        width: 42px;
+        height: 42px;
+    }
+
+    .avatar-x1,
+    .avatar-x2 {
+        width: 40px;
+    }
+
+    .username {
+        font-size: 16px;
+    }
+    .section-title {
+        font-size: 18px;
+    }
+
+    .post-btn {
+        padding: 14px 32px;
     }
 }
