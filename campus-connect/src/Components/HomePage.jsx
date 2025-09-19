@@ -60,17 +60,28 @@ const Homepage = () => {
         return `hsl(${hue}, 70%, 60%)`; // returns a bright HSL color
     };
 
-    // Navigation handlers for different sidebar actions
-    const handleSearch = () => navigate('/search');
-    const handleLikedPost = () => navigate('/liked');
-    const handleSavedPosts = () => navigate('/saved');
-    const handleNotifications = () => navigate('/notifications');
-    const handleExplore = () => navigate('/Home');
-    const handleLogOut = () => navigate('/login');
+    const handleSearch = () => {
+        navigate('/search');
+    };
 
-    // When Create Post is clicked:
-    // - close sidebar
-    // - open create post modal
+    const handleLikedPost = () => {
+        navigate('/liked');
+    };
+
+    const handleSavedPosts = () => {
+        navigate('/saved');
+    };
+
+    const handleNotifications = () => {
+        navigate('/notifications');
+    };
+      const handleExplore = () => {
+        navigate('/Home');
+    };
+          const handleLogout = () => {
+        navigate('/Login');
+    };
+
     const handleCreatePost = () => {
         setSidebarOpen(false);
         setIsCreatePostOpen(true);
@@ -95,6 +106,7 @@ const Homepage = () => {
         { id: 6, username: "User is black", timeAgo: "Posted 1s ago", title: "Document Title", tags: ['purple', 'red', 'orange', 'yellow'] },
         { id: 7, username: "User is fat", timeAgo: "Posted 1s ago", title: "Document Title", tags: ['red', 'blue', 'orange', 'green'] },
         { id: 8, username: "DaVid", timeAgo: "Posted 1s ago", title: "Document Title", tags: ['purple', 'red', 'orange', 'yellow'] },
+        { id: 9, username: "Creator", timeAgo: "Posted 12s ago", title: "ballered", tags: ['red', 'blue', 'orange', 'green'] },
     ];
 
     // Component UI begins here
@@ -146,7 +158,8 @@ const Homepage = () => {
                 </nav>
 
                 {/* Logout button at the bottom of the sidebar */}
-                <div className="sidebar-footer" onClick={handleLogOut}>
+               <div className="sidebar-footer" onClick={handleLogout}>
+
                     <button className="logout-btn">
                         <LogOut size={20} />
                         <span>Log Out</span>

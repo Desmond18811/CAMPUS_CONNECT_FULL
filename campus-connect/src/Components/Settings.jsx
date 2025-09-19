@@ -60,18 +60,58 @@ const Settings = ({ onClose }) => {
         }
     };
 
+    const handleClose = () => {
+        if (onClose) {
+            onClose(); // Use the provided onClose function if available
+        } else {
+            navigate('/home'); // Fallback to navigation
+        }
+    };
+
+    const handleNavigation = (id) => {
+        setActiveSection(id);
+        switch(id) {
+            case 'notifications':
+                navigate('/notifications');
+                break;
+            case 'likedPosts':
+                navigate('/likedPosts');
+                break;
+            case 'savedPosts':
+                navigate('/saved');
+                break;
+            case 'comments':
+                navigate('/comments');
+                break;
+            case 'help':
+                navigate('/help');
+                break;
+            case 'privacySupport':
+                navigate('/privacy-support');
+                break;
+            case 'accountStatus':
+                navigate('/account-status');
+                break;
+            case 'editProfile':
+                // Stay in settings for edit profile
+                break;
+            default:
+                break;
+        }
+    };
+
     const menuItems = [
-        { category: 'How you use campus connect', items: [{ id: 'editProfile', label: 'Edit Profile', icon: User, active: true }] },
-        { category: null, items: [{ id: 'notifications', label: 'Notifications', icon: BellSettings }] },
+        { category: 'How you use campus connect', items: [{ id: 'editProfile', label: 'Edit Profile', icon: User, active: true, color: "#2563eb" }] },
+        { category: null, items: [{ id: 'notifications', label: 'Notifications', icon: BellSettings, color: "#2563eb" }] },
         { category: 'How others can interact with you', items: [
-                { id: 'likedPosts', label: 'Liked Posts', icon: HeartSettings },
-                { id: 'savedPosts', label: 'Saved Posts', icon: BookmarkSettings },
-                { id: 'comments', label: 'Comments', icon: MessageCircleSettings },
+                { id: 'likedPosts', label: 'Liked Posts', icon: HeartSettings, color: "#2563eb" },
+                { id: 'savedPosts', label: 'Saved Posts', icon: BookmarkSettings, color: "#2563eb" },
+                { id: 'comments', label: 'Comments', icon: MessageCircleSettings, color: "#2563eb" },
             ]},
         { category: 'More info and support', items: [
-                { id: 'help', label: 'Help', icon: HelpCircle },
-                { id: 'privacySupport', label: 'Privacy Support', icon: Shield },
-                { id: 'accountStatus', label: 'Account Status', icon: UserCheck },
+                { id: 'help', label: 'Help', icon: HelpCircle , color: "#2563eb"},
+                { id: 'privacySupport', label: 'Privacy Support', icon: Shield , color: "#2563eb"},
+                { id: 'accountStatus', label: 'Account Status', icon: UserCheck , color: "#2563eb"},
             ]},
     ];
 
@@ -100,7 +140,7 @@ const Settings = ({ onClose }) => {
 
     return (
         <div className="settings-container">
-            <div className="settings-backdrop" onClick={() => navigate('/home')} />
+            <div className="settings-backdrop" onClick={handleClose} />
             <div className="settings-modal">
                 <div className="settings-layout">
                     <div className="settings-sidebar">
@@ -111,17 +151,7 @@ const Settings = ({ onClose }) => {
                                 {section.items.map(item => (
                                     <div
                                         key={item.id}
-                                        onClick={() => {
-                                            setActiveSection(item.id);
-                                            if (item.id === 'notifications') navigate('/notifications');
-                                            else if (item.id === 'likedPosts') navigate('/likedPosts');
-                                            else if (item.id === 'savedPosts') navigate('/saved');
-                                            else if (item.id === 'comments') navigate('/comments');
-                                            else if (item.id === 'help') navigate('/help');
-                                            else if (item.id === 'privacySupport') navigate('/privacy-support');
-                                            else if (item.id === 'accountStatus') navigate('/account-status');
-                                            else if (item.id === 'editProfile') navigate('/settings'); // Keeping edit profile within settings
-                                        }}
+                                        onClick={() => handleNavigation(item.id)}
                                         className={`menu-item ${item.active || activeSection === item.id ? 'active' : ''}`}
                                     >
                                         <item.icon className="menu-icon" />
@@ -135,7 +165,7 @@ const Settings = ({ onClose }) => {
                     <div className="settings-content">
                         <div className="content-header">
                             <h2 className="content-title">Edit Profile</h2>
-                            <button onClick={() => navigate('/home')} className="close-button"><X /></button>
+                            <button onClick={handleClose} className="close-button"><X/></button>
                         </div>
                         <div className="profile-section">
                             <div className="profile-card">
