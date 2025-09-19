@@ -60,9 +60,9 @@ const Create = ({ onClose }) => {
     const removeFilter = (index) => setFilters(filters.filter((_, i) => i !== index));
 
     return (
-        <div className="settings-container">
-            <div className="settings-backdrop" onClick={onClose} />
-            <div className="settings-modal">
+        <div className="container">
+            <div className="backdrop" onClick={onClose} />
+            <div className="popup">
                 <div className="header">
                     <div className="user-info">
                         <div className="avatar" style={{ backgroundColor: '#f3f4f6' }}>

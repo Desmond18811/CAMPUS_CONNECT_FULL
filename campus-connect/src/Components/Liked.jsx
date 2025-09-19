@@ -25,7 +25,7 @@ function Liked() {
   const handleSavedPosts = () => navigate("/saved");
   const handleNotifications = () => navigate("/notifications");
   const handleCreatePost = () => navigate("/create");
-  const handleExplore = () => navigate("/explore");
+  const handleExplore = () => navigate("/Home");
   const handleSettings = () => navigate("/settings");
   const handleLogOut = () => navigate("/login");
 
