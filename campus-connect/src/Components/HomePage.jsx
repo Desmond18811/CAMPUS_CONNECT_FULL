@@ -1,7 +1,4 @@
-// Importing React and useState hook from React library
-import React, { useState } from 'react';
-
-// Importing multiple icons from the lucide-react icon library
+import React, { useState, useEffect } from 'react';
 import {
     Search,
     Heart,
@@ -16,42 +13,31 @@ import {
     Edit,
     X
 } from 'lucide-react';
-
-// Importing CSS styles specific to the HomePage component
 import '../styles/HomePage.css';
-
-// Importing custom React components
 import Create from './Create';
 import SettingsComponent from './Settings';
-
-// Importing a JSON animation file
 import animationData from '../assets/onlineLearning.json';
-
-// Importing navigation hook from React Router
 import { useNavigate } from 'react-router-dom';
-
-// Importing the Lottie animation library
 import Lottie from "lottie-react";
 
-// Defining the Homepage component
 const Homepage = () => {
-    // State for sidebar visibility
     const [sidebarOpen, setSidebarOpen] = useState(true);
-
-    // State for settings modal
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-
-    // State for create post modal
     const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
-
-    // State for search query
     const [searchQuery, setSearchQuery] = useState('');
-
-    // Navigation hook
+    const [userData, setUserData] = useState({
+        username: '',
+        profileImage: null,
+        profileColor: '#cc002e'
+    });
+    const [posts, setPosts] = useState([]);
+    const [notifications, setNotifications] = useState([]);
     const navigate = useNavigate();
 
-    // Function to generate a unique color for each username
+    const SERVER_URL = 'https://campcon-test.onrender.com';
+
     const generateUserColor = (username) => {
+        if (!username) return userData.profileColor;
         let hash = 0;
         for (let i = 0; i < username.length; i++) {
             hash = username.charCodeAt(i) + ((hash << 5) - hash);
@@ -60,12 +46,139 @@ const Homepage = () => {
         return `hsl(${hue}, 70%, 60%)`;
     };
 
-    // Handle search input change
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/Login');
+            return;
+        }
+
+        // Fetch user profile
+        fetch(`${SERVER_URL}/api/users/profile`, {
+            headers: { 'Authorization': `Bearer ${token}` },
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    setUserData({
+                        username: data.data.username || '',
+                        profileImage: data.data.profilePic ? `${SERVER_URL}${data.data.profilePic}` : null,
+                        profileColor: data.data.profileColor || '#cc002e'
+                    });
+                } else {
+                    console.error('Failed to fetch profile:', data.message);
+                }
+            })
+            .catch(error => console.error('Error fetching profile:', error.message));
+
+        // Fetch resources
+        fetch(`${SERVER_URL}/api/resources`, {
+            headers: { 'Authorization': `Bearer ${token}` },
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const fetchedPosts = data.data.map(post => ({
+                        id: post._id,
+                        username: post.uploader?.username || 'Unknown',
+                        profileImage: post.profilePic ? `${SERVER_URL}${post.profilePic}` : post.uploader?.profilePic ? `${SERVER_URL}${post.uploader.profilePic}` : null,
+                        profileColor: post.profileColor || post.uploader?.profileColor || generateUserColor(post.uploader?.username || ''),
+                        imageUrl: post.imageUrl ? `${SERVER_URL}${post.imageUrl}` : '',
+                        fileUrl: post.fileUrl ? `${SERVER_URL}${post.fileUrl}` : '',
+                        timeAgo: formatTimeAgo(new Date(post.createdAt)),
+                        title: post.title,
+                        tags: post.tags || [],
+                        taggedUsers: post.taggedUsers || [],
+                        likeCount: post.likeCount || 0,
+                        liked: false,
+                        saved: false
+                    }));
+                    setPosts(fetchedPosts);
+                } else {
+                    console.error('Failed to fetch resources:', data.message);
+                }
+            })
+            .catch(error => console.error('Error fetching posts:', error.message));
+
+        // Fetch notifications
+        fetch(`${SERVER_URL}/api/notifications`, {
+            headers: { 'Authorization': `Bearer ${token}` },
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    setNotifications(data.data);
+                } else {
+                    console.error('Failed to fetch notifications:', data.message);
+                }
+            })
+            .catch(error => console.error('Error fetching notifications:', error.message));
+    }, [navigate]);
+
+    // Format time ago
+    const formatTimeAgo = (date) => {
+        const seconds = Math.floor((Date.now() - date) / 1000);
+        if (seconds < 60) return `${seconds}s ago`;
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return `${minutes}m ago`;
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours}h ago`;
+        const days = Math.floor(hours / 24);
+        return `${days}d ago`;
+    };
+
+    const handleLike = async (resourceId) => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`${SERVER_URL}/api/resources/${resourceId}/like`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+            const data = await response.json();
+            if (data.success) {
+                setPosts(prev => prev.map(post =>
+                    post.id === resourceId
+                        ? {
+                            ...post,
+                            liked: data.message === 'Resource liked',
+                            likeCount: data.message === 'Resource liked' ? post.likeCount + 1 : post.likeCount - 1
+                        }
+                        : post
+                ));
+            } else {
+                console.error('Failed to like resource:', data.message);
+            }
+        } catch (error) {
+            console.error('Error liking resource:', error.message);
+        }
+    };
+
+    const handleSave = async (resourceId) => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`${SERVER_URL}/api/resources/${resourceId}/save`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+            const data = await response.json();
+            if (data.success) {
+                setPosts(prev => prev.map(post =>
+                    post.id === resourceId
+                        ? { ...post, saved: data.message === 'Resource saved' }
+                        : post
+                ));
+            } else {
+                console.error('Failed to save resource:', data.message);
+            }
+        } catch (error) {
+            console.error('Error saving resource:', error.message);
+        }
+    };
+
     const handleSearchInput = (e) => {
         setSearchQuery(e.target.value);
     };
 
-    // Optional: Keep navigation to /search if needed
     const handleSearchNavigation = () => {
         navigate('/search');
     };
@@ -87,6 +200,7 @@ const Homepage = () => {
     };
 
     const handleLogout = () => {
+        localStorage.removeItem('token');
         navigate('/Login');
     };
 
@@ -100,20 +214,6 @@ const Homepage = () => {
         setIsSettingsOpen(true);
     };
 
-    // Hardcoded list of posts
-    const posts = [
-        { id: 1, username: "Osoba's balls", timeAgo: "Posted 1s ago", title: "Document Title", tags: ['red', 'blue', 'orange', 'green'] },
-        { id: 2, username: "User is weird", timeAgo: "Posted 1s ago", title: "Document Title", tags: ['purple', 'red', 'orange', 'yellow'] },
-        { id: 3, username: "User is desmond", timeAgo: "Posted 1s ago", title: "Document Title", tags: ['red', 'blue', 'orange', 'green'] },
-        { id: 4, username: "User is weird", timeAgo: "Posted 1s ago", title: "Document Title", tags: ['purple', 'red', 'orange', 'yellow'] },
-        { id: 5, username: "User is desmond", timeAgo: "Posted 1s ago", title: "Document Title", tags: ['red', 'blue', 'orange', 'green'] },
-        { id: 6, username: "User is black", timeAgo: "Posted 1s ago", title: "Document Title", tags: ['purple', 'red', 'orange', 'yellow'] },
-        { id: 7, username: "User is fat", timeAgo: "Posted 1s ago", title: "Document Title", tags: ['red', 'blue', 'orange', 'green'] },
-        { id: 8, username: "DaVid", timeAgo: "Posted 1s ago", title: "Document Title", tags: ['purple', 'red', 'orange', 'yellow'] },
-        { id: 9, username: "Creator", timeAgo: "Posted 12s ago", title: "ballered", tags: ['red', 'blue', 'orange', 'green'] },
-    ];
-
-    // Filter posts based on search query
     const filteredPosts = posts.filter(post =>
         post.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
         post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -122,7 +222,6 @@ const Homepage = () => {
 
     return (
         <div className="campus-connect">
-            {/* Sidebar */}
             <div className={`sidebar ${!sidebarOpen ? 'closed' : ''}`} style={{ display: sidebarOpen ? 'flex' : 'none' }}>
                 <div className="sidebar-header">
                     <h1>Campus Connect</h1>
@@ -142,7 +241,7 @@ const Homepage = () => {
                     </div>
                     <div className="nav-item" onClick={handleNotifications}>
                         <Bell size={20} color="#2563eb" />
-                        <span>Notifications</span>
+                        <span>Notifications ({notifications.length})</span>
                     </div>
                     <div className="nav-item" onClick={handleCreatePost}>
                         <Plus size={20} color="#2563eb" />
@@ -165,9 +264,7 @@ const Homepage = () => {
                 </div>
             </div>
 
-            {/* Main content */}
             <div className="main-content">
-                {/* Search bar and animation */}
                 <div className="search-container">
                     <div className="search-bar">
                         <Search className="search-icon" size={20} />
@@ -188,91 +285,148 @@ const Homepage = () => {
                     </div>
                 </div>
 
-                {/* Feed of posts */}
                 <div className="posts-feed">
                     {filteredPosts.length > 0 ? (
-                        filteredPosts.map(post => {
-                            const userColor = generateUserColor(post.username);
-                            return (
-                                <div key={post.id} className="post-card">
-                                    <div className="post-header">
-                                        <div className="post-user">
-                                            <div className="user-logo" style={{
-                                                backgroundColor: userColor,
-                                                color: 'white',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                fontSize: '12px',
-                                                width: '32px',
-                                                height: '32px',
-                                                borderRadius: '50%'
-                                            }}>
+                        filteredPosts.map(post => (
+                            <div key={post.id} className="post-card">
+                                <div className="post-header">
+                                    <div className="post-user">
+                                        {post.profileImage ? (
+                                            <img
+                                                src={post.profileImage}
+                                                alt="Profile"
+                                                className="user-logo"
+                                                style={{ width: '32px', height: '32px', borderRadius: '50%' }}
+                                            />
+                                        ) : (
+                                            <div
+                                                className="user-logo"
+                                                style={{
+                                                    backgroundColor: post.profileColor,
+                                                    color: 'white',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    fontSize: '12px',
+                                                    width: '32px',
+                                                    height: '32px',
+                                                    borderRadius: '50%'
+                                                }}
+                                            >
                                                 {post.username.charAt(0).toUpperCase()}
                                             </div>
-                                            <span className="username">{post.username}</span>
-                                        </div>
-                                        <button className="more-options">
-                                            <MoreHorizontal size={20} />
-                                        </button>
+                                        )}
+                                        <span className="username">{post.username}</span>
                                     </div>
-                                    <div className="document-preview">
-                                        <div className="document-placeholder">
-                                            <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                            </svg>
-                                        </div>
-                                    </div>
-                                    <div className="post-content">
-                                        <div className="post-time">{post.timeAgo}</div>
-                                        <div className="tags">
-                                            {post.tags.map((tag, index) => (
-                                                <div key={index} className={`tag tag-${tag}`} />
-                                            ))}
-                                        </div>
-                                        <h3 className="post-title">{post.title}</h3>
-                                        <div className="post-actions">
-                                            <div className="action-buttons">
-                                                <button className="action-btn">
-                                                    <Heart size={20} />
-                                                </button>
-                                                <button className="action-btn">
-                                                    <MessageCircle size={20} />
-                                                </button>
+                                    <button className="more-options">
+                                        <MoreHorizontal size={20} />
+                                    </button>
+                                </div>
+                                <div className="document-preview">
+                                    {post.imageUrl ? (
+                                        <a href={post.fileUrl} target="_blank" rel="noopener noreferrer">
+                                            <img
+                                                src={post.imageUrl}
+                                                alt={post.title}
+                                                style={{ width: '100%', height: '192px', objectFit: 'cover', borderRadius: '8px' }}
+                                            />
+                                        </a>
+                                    ) : (
+                                        <a href={post.fileUrl} target="_blank" rel="noopener noreferrer">
+                                            <div className="document-placeholder">
+                                                <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                </svg>
                                             </div>
+                                        </a>
+                                    )}
+                                </div>
+                                <div className="post-content">
+                                    <div className="post-time">{post.timeAgo}</div>
+                                    <div className="tags">
+                                        {post.tags.map((tag, index) => (
+                                            <div key={index} className={`tag tag-${tag}`} />
+                                        ))}
+                                    </div>
+                                    <h3 className="post-title">{post.title}</h3>
+                                    <div className="post-actions">
+                                        <div className="action-buttons">
+                                            <button
+                                                className={`action-btn ${post.liked ? 'liked' : ''}`}
+                                                onClick={() => handleLike(post.id)}
+                                                style={{ color: post.liked ? '#ff0000' : '#666' }}
+                                            >
+                                                <Heart size={20} fill={post.liked ? '#ff0000' : 'none'} />
+                                            </button>
                                             <button className="action-btn">
-                                                <Bookmark size={20} />
+                                                <MessageCircle size={20} />
                                             </button>
                                         </div>
+                                        <button
+                                            className={`action-btn ${post.saved ? 'saved' : ''}`}
+                                            onClick={() => handleSave(post.id)}
+                                            style={{ color: post.saved ? '#000000' : '#666' }}
+                                        >
+                                            <Bookmark size={20} fill={post.saved ? '#000000' : 'none'} />
+                                        </button>
                                     </div>
                                 </div>
-                            );
-                        })
+                            </div>
+                        ))
                     ) : (
                         <div className="no-posts">No posts found</div>
                     )}
                 </div>
             </div>
 
-            {/* Floating action button */}
             <button className="fab" onClick={handleCreatePost}>
                 <Edit size={24} />
             </button>
 
-            {/* Settings and Create Post modals */}
             {isSettingsOpen && (
-                <SettingsComponent onClose={() => {
-                    setIsSettingsOpen(false);
-                    setSidebarOpen(true);
-                    navigate('/home');
-                }} />
+                <SettingsComponent
+                    onClose={() => {
+                        setIsSettingsOpen(false);
+                        setSidebarOpen(true);
+                        navigate('/home');
+                    }}
+                    userData={userData}
+                    setUserData={setUserData}
+                />
             )}
             {isCreatePostOpen && (
-                <Create onClose={() => {
-                    setIsCreatePostOpen(false);
-                    setSidebarOpen(true);
-                    navigate('/home');
-                }} />
+                <Create
+                    onClose={() => {
+                        setIsCreatePostOpen(false);
+                        setSidebarOpen(true);
+                        navigate('/home');
+                        // Refresh posts after creating a new one
+                        fetch(`${SERVER_URL}/api/resources`, {
+                            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                        })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    setPosts(data.data.map(post => ({
+                                        id: post._id,
+                                        username: post.uploader?.username || 'Unknown',
+                                        profileImage: post.profilePic ? `${SERVER_URL}${post.profilePic}` : post.uploader?.profilePic ? `${SERVER_URL}${post.uploader.profilePic}` : null,
+                                        profileColor: post.profileColor || post.uploader?.profileColor || generateUserColor(post.uploader?.username || ''),
+                                        imageUrl: post.imageUrl ? `${SERVER_URL}${post.imageUrl}` : '',
+                                        fileUrl: post.fileUrl ? `${SERVER_URL}${post.fileUrl}` : '',
+                                        timeAgo: formatTimeAgo(new Date(post.createdAt)),
+                                        title: post.title,
+                                        tags: post.tags || [],
+                                        taggedUsers: post.taggedUsers || [],
+                                        likeCount: post.likeCount || 0,
+                                        liked: false,
+                                        saved: false
+                                    })));
+                                }
+                            });
+                    }}
+                    userData={userData}
+                />
             )}
         </div>
     );
