@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 
 // Importing multiple icons from the lucide-react icon library
-// Each of these icons is an SVG React component you can render directly
 import {
     Search,
     Heart,
@@ -21,46 +20,53 @@ import {
 // Importing CSS styles specific to the HomePage component
 import '../styles/HomePage.css';
 
-// Importing custom React components that will be rendered inside this page
+// Importing custom React components
 import Create from './Create';
 import SettingsComponent from './Settings';
 
-// Importing a JSON animation file (for Lottie animation player)
+// Importing a JSON animation file
 import animationData from '../assets/onlineLearning.json';
 
 // Importing navigation hook from React Router
-// useNavigate lets us move programmatically between routes
 import { useNavigate } from 'react-router-dom';
 
-// Importing the Lottie animation library to render the animationData JSON
+// Importing the Lottie animation library
 import Lottie from "lottie-react";
 
-// Defining a functional React component named Homepage
+// Defining the Homepage component
 const Homepage = () => {
-    // State to track if the sidebar is open (true by default)
+    // State for sidebar visibility
     const [sidebarOpen, setSidebarOpen] = useState(true);
 
-    // State to check if settings modal/component is open
+    // State for settings modal
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
-    // State to check if create post modal/component is open
+    // State for create post modal
     const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
 
-    // useNavigate hook lets us navigate to different routes
+    // State for search query
+    const [searchQuery, setSearchQuery] = useState('');
+
+    // Navigation hook
     const navigate = useNavigate();
 
     // Function to generate a unique color for each username
-    // It creates a hash from the username and maps it to an HSL color
     const generateUserColor = (username) => {
         let hash = 0;
         for (let i = 0; i < username.length; i++) {
             hash = username.charCodeAt(i) + ((hash << 5) - hash);
         }
         const hue = hash % 360;
-        return `hsl(${hue}, 70%, 60%)`; // returns a bright HSL color
+        return `hsl(${hue}, 70%, 60%)`;
     };
 
-    const handleSearch = () => {
+    // Handle search input change
+    const handleSearchInput = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    // Optional: Keep navigation to /search if needed
+    const handleSearchNavigation = () => {
         navigate('/search');
     };
 
@@ -75,10 +81,12 @@ const Homepage = () => {
     const handleNotifications = () => {
         navigate('/notifications');
     };
-      const handleExplore = () => {
+
+    const handleExplore = () => {
         navigate('/Home');
     };
-          const handleLogout = () => {
+
+    const handleLogout = () => {
         navigate('/Login');
     };
 
@@ -87,16 +95,12 @@ const Homepage = () => {
         setIsCreatePostOpen(true);
     };
 
-    // When Settings is clicked:
-    // - close sidebar
-    // - open settings modal
     const handleSettings = () => {
         setSidebarOpen(false);
         setIsSettingsOpen(true);
     };
 
-    // Hardcoded list of post objects
-    // Each post contains id, username, timeAgo, title, and tags
+    // Hardcoded list of posts
     const posts = [
         { id: 1, username: "Osoba's balls", timeAgo: "Posted 1s ago", title: "Document Title", tags: ['red', 'blue', 'orange', 'green'] },
         { id: 2, username: "User is weird", timeAgo: "Posted 1s ago", title: "Document Title", tags: ['purple', 'red', 'orange', 'yellow'] },
@@ -109,57 +113,51 @@ const Homepage = () => {
         { id: 9, username: "Creator", timeAgo: "Posted 12s ago", title: "ballered", tags: ['red', 'blue', 'orange', 'green'] },
     ];
 
-    // Component UI begins here
+    // Filter posts based on search query
+    const filteredPosts = posts.filter(post =>
+        post.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+
     return (
         <div className="campus-connect">
-            
-            {/* Sidebar (only visible if sidebarOpen = true) */}
+            {/* Sidebar */}
             <div className={`sidebar ${!sidebarOpen ? 'closed' : ''}`} style={{ display: sidebarOpen ? 'flex' : 'none' }}>
                 <div className="sidebar-header">
                     <h1>Campus Connect</h1>
                 </div>
-
-                {/* Navigation Menu Items */}
                 <nav className="navigation">
-                    <div className="nav-item" onClick={handleSearch}>
+                    <div className="nav-item" onClick={handleSearchNavigation}>
                         <Search size={20} color="#2563eb" />
                         <span>Search</span>
                     </div>
-
                     <div className="nav-item" onClick={handleLikedPost}>
                         <Heart size={20} color="#2563eb" />
                         <span>Liked Posts</span>
                     </div>
-
                     <div className="nav-item" onClick={handleSavedPosts}>
                         <Bookmark size={20} color="#2563eb" />
                         <span>Saved Posts</span>
                     </div>
-
                     <div className="nav-item" onClick={handleNotifications}>
                         <Bell size={20} color="#2563eb" />
                         <span>Notifications</span>
                     </div>
-
                     <div className="nav-item" onClick={handleCreatePost}>
                         <Plus size={20} color="#2563eb" />
                         <span>Create Post</span>
                     </div>
-
                     <div className="nav-item" onClick={handleExplore}>
                         <Compass size={20} color="#2563eb" />
                         <span>Explore</span>
                     </div>
-
                     <div className="nav-item" onClick={handleSettings}>
                         <Settings size={20} color="#2563eb" />
                         <span>Settings</span>
                     </div>
                 </nav>
-
-                {/* Logout button at the bottom of the sidebar */}
-               <div className="sidebar-footer" onClick={handleLogout}>
-
+                <div className="sidebar-footer" onClick={handleLogout}>
                     <button className="logout-btn">
                         <LogOut size={20} />
                         <span>Log Out</span>
@@ -167,17 +165,20 @@ const Homepage = () => {
                 </div>
             </div>
 
-            {/* Main content area */}
+            {/* Main content */}
             <div className="main-content">
-
                 {/* Search bar and animation */}
                 <div className="search-container">
                     <div className="search-bar">
                         <Search className="search-icon" size={20} />
-                        <input type="text" placeholder="Search for contents" className="search-input" />
+                        <input
+                            type="text"
+                            placeholder="Search for contents"
+                            className="search-input"
+                            value={searchQuery}
+                            onChange={handleSearchInput}
+                        />
                     </div>
-
-                    {/* Lottie animation card */}
                     <div className="lottie-card">
                         <Lottie
                             animationData={animationData}
@@ -189,88 +190,76 @@ const Homepage = () => {
 
                 {/* Feed of posts */}
                 <div className="posts-feed">
-                    {posts.map(post => {
-                        // Generate unique color for the user's avatar circle
-                        const userColor = generateUserColor(post.username);
-
-                        return (
-                            <div key={post.id} className="post-card">
-
-                                {/* Post Header: user info + more options */}
-                                <div className="post-header">
-                                    <div className="post-user">
-                                        {/* User initial inside colored circle */}
-                                        <div className="user-logo" style={{
-                                            backgroundColor: userColor,
-                                            color: 'white',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            fontSize: '12px',
-                                            width: '32px',
-                                            height: '32px',
-                                            borderRadius: '50%'
-                                        }}>
-                                            {post.username.charAt(0).toUpperCase()}
+                    {filteredPosts.length > 0 ? (
+                        filteredPosts.map(post => {
+                            const userColor = generateUserColor(post.username);
+                            return (
+                                <div key={post.id} className="post-card">
+                                    <div className="post-header">
+                                        <div className="post-user">
+                                            <div className="user-logo" style={{
+                                                backgroundColor: userColor,
+                                                color: 'white',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                fontSize: '12px',
+                                                width: '32px',
+                                                height: '32px',
+                                                borderRadius: '50%'
+                                            }}>
+                                                {post.username.charAt(0).toUpperCase()}
+                                            </div>
+                                            <span className="username">{post.username}</span>
                                         </div>
-                                        <span className="username">{post.username}</span>
-                                    </div>
-                                    {/* Button for more options (3 dots) */}
-                                    <button className="more-options">
-                                        <MoreHorizontal size={20} />
-                                    </button>
-                                </div>
-
-                                {/* Document preview section (placeholder right now) */}
-                                <div className="document-preview">
-                                    <div className="document-placeholder">
-                                        <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                        </svg>
-                                    </div>
-                                </div>
-
-                                {/* Post content: time, tags, title, actions */}
-                                <div className="post-content">
-                                    <div className="post-time">{post.timeAgo}</div>
-
-                                    {/* Render tags */}
-                                    <div className="tags">
-                                        {post.tags.map((tag, index) => (
-                                            <div key={index} className={`tag tag-${tag}`} />
-                                        ))}
-                                    </div>
-
-                                    {/* Post Title */}
-                                    <h3 className="post-title">{post.title}</h3>
-
-                                    {/* Action buttons (like, comment, save) */}
-                                    <div className="post-actions">
-                                        <div className="action-buttons">
-                                            <button className="action-btn">
-                                                <Heart size={20} />
-                                            </button>
-                                            <button className="action-btn">
-                                                <MessageCircle size={20} />
-                                            </button>
-                                        </div>
-                                        <button className="action-btn">
-                                            <Bookmark size={20} />
+                                        <button className="more-options">
+                                            <MoreHorizontal size={20} />
                                         </button>
                                     </div>
+                                    <div className="document-preview">
+                                        <div className="document-placeholder">
+                                            <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div className="post-content">
+                                        <div className="post-time">{post.timeAgo}</div>
+                                        <div className="tags">
+                                            {post.tags.map((tag, index) => (
+                                                <div key={index} className={`tag tag-${tag}`} />
+                                            ))}
+                                        </div>
+                                        <h3 className="post-title">{post.title}</h3>
+                                        <div className="post-actions">
+                                            <div className="action-buttons">
+                                                <button className="action-btn">
+                                                    <Heart size={20} />
+                                                </button>
+                                                <button className="action-btn">
+                                                    <MessageCircle size={20} />
+                                                </button>
+                                            </div>
+                                            <button className="action-btn">
+                                                <Bookmark size={20} />
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })
+                    ) : (
+                        <div className="no-posts">No posts found</div>
+                    )}
                 </div>
             </div>
 
-            {/* Floating action button to create a post */}
+            {/* Floating action button */}
             <button className="fab" onClick={handleCreatePost}>
                 <Edit size={24} />
             </button>
 
-            {/* Render settings component if open */}
+            {/* Settings and Create Post modals */}
             {isSettingsOpen && (
                 <SettingsComponent onClose={() => {
                     setIsSettingsOpen(false);
@@ -278,8 +267,6 @@ const Homepage = () => {
                     navigate('/home');
                 }} />
             )}
-
-            {/* Render create post component if open */}
             {isCreatePostOpen && (
                 <Create onClose={() => {
                     setIsCreatePostOpen(false);
@@ -291,5 +278,4 @@ const Homepage = () => {
     );
 };
 
-// Exporting the Homepage component so it can be imported elsewhere
 export default Homepage;
