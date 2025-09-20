@@ -139,11 +139,13 @@ body {
     font-size: 16px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
     caret-color: #2563eb; /* Set the cursor color to blue */
+    color: #2563eb; /* Set the text color to blue */
 }
 
 .search-input:focus {
     border-color: #2563eb;
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    caret-color: #2563eb;
 }
 
 /* Posts feed */
@@ -160,12 +162,11 @@ body {
     background-color: white;
     border-radius: 16px;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    border: 1px solid #2563eb;  
+    border: 1px solid #2563eb;
     overflow: hidden;
     transition: box-shadow 0.2s ease;
     width: 100%;
 }
-
 
 .post-card:hover {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
