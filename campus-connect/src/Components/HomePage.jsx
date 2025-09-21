@@ -71,34 +71,57 @@ const Homepage = () => {
             })
             .catch(error => console.error('Error fetching profile:', error.message));
 
-        // Fetch resources
-        fetch(`${SERVER_URL}/api/resources`, {
-            headers: { 'Authorization': `Bearer ${token}` },
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    const fetchedPosts = data.data.map(post => ({
+        // Fetch resources, liked, and saved concurrently
+        const fetchData = async () => {
+            try {
+                const [resourcesRes, likedRes, savedRes] = await Promise.all([
+                    fetch(`${SERVER_URL}/api/resources`, {
+                        headers: { 'Authorization': `Bearer ${token}` },
+                    }),
+                    fetch(`${SERVER_URL}/api/resources/liked`, {
+                        headers: { 'Authorization': `Bearer ${token}` },
+                    }),
+                    fetch(`${SERVER_URL}/api/resources/saved`, {
+                        headers: { 'Authorization': `Bearer ${token}` },
+                    })
+                ]);
+
+                const [resourcesData, likedData, savedData] = await Promise.all([
+                    resourcesRes.json(),
+                    likedRes.json(),
+                    savedRes.json()
+                ]);
+
+                if (resourcesData.success && likedData.success && savedData.success) {
+                    const likedIds = likedData.data.map(post => post._id);
+                    const savedIds = savedData.data.map(post => post._id);
+
+                    const fetchedPosts = resourcesData.data.map(post => ({
                         id: post._id,
                         username: post.uploader?.username || 'Unknown',
                         profileImage: post.profilePic ? `${SERVER_URL}${post.profilePic}` : post.uploader?.profilePic ? `${SERVER_URL}${post.uploader.profilePic}` : null,
                         profileColor: post.profileColor || post.uploader?.profileColor || generateUserColor(post.uploader?.username || ''),
                         imageUrl: post.imageUrl ? `${SERVER_URL}${post.imageUrl}` : '',
                         fileUrl: post.fileUrl ? `${SERVER_URL}${post.fileUrl}` : '',
+                        fileType: post.fileType || '',
                         timeAgo: formatTimeAgo(new Date(post.createdAt)),
                         title: post.title,
                         tags: post.tags || [],
                         taggedUsers: post.taggedUsers || [],
                         likeCount: post.likeCount || 0,
-                        liked: false,
-                        saved: false
+                        liked: likedIds.includes(post._id),
+                        saved: savedIds.includes(post._id)
                     }));
                     setPosts(fetchedPosts);
                 } else {
-                    console.error('Failed to fetch resources:', data.message);
+                    console.error('Failed to fetch resources/liked/saved:', resourcesData.message || likedData.message || savedData.message);
                 }
-            })
-            .catch(error => console.error('Error fetching posts:', error.message));
+            } catch (error) {
+                console.error('Error fetching posts/liked/saved:', error.message);
+            }
+        };
+
+        fetchData();
 
         // Fetch notifications
         fetch(`${SERVER_URL}/api/notifications`, {
@@ -141,7 +164,7 @@ const Homepage = () => {
                         ? {
                             ...post,
                             liked: data.message === 'Resource liked',
-                            likeCount: data.message === 'Resource liked' ? post.likeCount + 1 : post.likeCount - 1
+                            likeCount: data.likeCount
                         }
                         : post
                 ));
@@ -164,7 +187,7 @@ const Homepage = () => {
             if (data.success) {
                 setPosts(prev => prev.map(post =>
                     post.id === resourceId
-                        ? { ...post, saved: data.message === 'Resource saved' }
+                        ? { ...post, saved: data.saved }
                         : post
                 ));
             } else {
@@ -219,6 +242,12 @@ const Homepage = () => {
         post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
     );
+
+    // Determine if file is a video
+    const isVideo = (fileType) => ['.mp4', '.mov', '.avi'].includes(fileType);
+
+    // Determine if file is an image
+    const isImage = (fileType) => ['.jpeg', '.jpg', '.png', '.gif', '.webp', '.bmp'].includes(fileType);
 
     return (
         <div className="campus-connect">
@@ -297,25 +326,28 @@ const Homepage = () => {
                                                 alt="Profile"
                                                 className="user-logo"
                                                 style={{ width: '32px', height: '32px', borderRadius: '50%' }}
-                                            />
-                                        ) : (
-                                            <div
-                                                className="user-logo"
-                                                style={{
-                                                    backgroundColor: post.profileColor,
-                                                    color: 'white',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    fontSize: '12px',
-                                                    width: '32px',
-                                                    height: '32px',
-                                                    borderRadius: '50%'
+                                                onError={(e) => {
+                                                    e.target.style.display = 'none';
+                                                    e.target.nextSibling.style.display = 'flex';
                                                 }}
-                                            >
-                                                {post.username.charAt(0).toUpperCase()}
-                                            </div>
-                                        )}
+                                            />
+                                        ) : null}
+                                        <div
+                                            className="user-logo"
+                                            style={{
+                                                backgroundColor: post.profileColor,
+                                                color: 'white',
+                                                display: post.profileImage ? 'none' : 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                fontSize: '12px',
+                                                width: '32px',
+                                                height: '32px',
+                                                borderRadius: '50%'
+                                            }}
+                                        >
+                                            {post.username.charAt(0).toUpperCase()}
+                                        </div>
                                         <span className="username">{post.username}</span>
                                     </div>
                                     <button className="more-options">
@@ -323,29 +355,44 @@ const Homepage = () => {
                                     </button>
                                 </div>
                                 <div className="document-preview">
-                                    {post.imageUrl ? (
-                                        <a href={post.fileUrl} target="_blank" rel="noopener noreferrer">
+                                    <a href={post.fileUrl} target="_blank" rel="noopener noreferrer">
+                                        {isVideo(post.fileType) ? (
+                                            <video
+                                                src={post.fileUrl}
+                                                poster={post.imageUrl}
+                                                style={{ width: '100%', height: '192px', objectFit: 'cover', borderRadius: '8px' }}
+                                                controls
+                                                muted
+                                            />
+                                        ) : post.imageUrl || isImage(post.fileType) ? (
                                             <img
-                                                src={post.imageUrl}
+                                                src={post.imageUrl || post.fileUrl}
                                                 alt={post.title}
                                                 style={{ width: '100%', height: '192px', objectFit: 'cover', borderRadius: '8px' }}
+                                                onError={(e) => {
+                                                    e.target.style.display = 'none';
+                                                    e.target.nextSibling.style.display = 'block';
+                                                }}
                                             />
-                                        </a>
-                                    ) : (
-                                        <a href={post.fileUrl} target="_blank" rel="noopener noreferrer">
+                                        ) : (
                                             <div className="document-placeholder">
                                                 <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                                 </svg>
                                             </div>
-                                        </a>
-                                    )}
+                                        )}
+                                        <div className="document-placeholder" style={{ display: 'none' }}>
+                                            <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                        </div>
+                                    </a>
                                 </div>
                                 <div className="post-content">
                                     <div className="post-time">{post.timeAgo}</div>
                                     <div className="tags">
                                         {post.tags.map((tag, index) => (
-                                            <div key={index} className={`tag tag-${tag}`} />
+                                            <div key={index} className={`tag tag-${tag.toLowerCase()}`} />
                                         ))}
                                     </div>
                                     <h3 className="post-title">{post.title}</h3>
@@ -356,7 +403,7 @@ const Homepage = () => {
                                                 onClick={() => handleLike(post.id)}
                                                 style={{ color: post.liked ? '#ff0000' : '#666' }}
                                             >
-                                                <Heart size={20} fill={post.liked ? '#ff0000' : 'none'} />
+                                                <Heart size={20} fill={post.liked ? '#ff0000' : 'none'} /> {post.likeCount}
                                             </button>
                                             <button className="action-btn">
                                                 <MessageCircle size={20} />
@@ -401,29 +448,54 @@ const Homepage = () => {
                         setSidebarOpen(true);
                         navigate('/home');
                         // Refresh posts after creating a new one
-                        fetch(`${SERVER_URL}/api/resources`, {
-                            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
-                        })
-                            .then(res => res.json())
-                            .then(data => {
-                                if (data.success) {
-                                    setPosts(data.data.map(post => ({
+                        const token = localStorage.getItem('token');
+                        const refreshData = async () => {
+                            try {
+                                const [resourcesRes, likedRes, savedRes] = await Promise.all([
+                                    fetch(`${SERVER_URL}/api/resources`, {
+                                        headers: { 'Authorization': `Bearer ${token}` },
+                                    }),
+                                    fetch(`${SERVER_URL}/api/resources/liked`, {
+                                        headers: { 'Authorization': `Bearer ${token}` },
+                                    }),
+                                    fetch(`${SERVER_URL}/api/resources/saved`, {
+                                        headers: { 'Authorization': `Bearer ${token}` },
+                                    })
+                                ]);
+
+                                const [resourcesData, likedData, savedData] = await Promise.all([
+                                    resourcesRes.json(),
+                                    likedRes.json(),
+                                    savedRes.json()
+                                ]);
+
+                                if (resourcesData.success && likedData.success && savedData.success) {
+                                    const likedIds = likedData.data.map(post => post._id);
+                                    const savedIds = savedData.data.map(post => post._id);
+
+                                    const fetchedPosts = resourcesData.data.map(post => ({
                                         id: post._id,
                                         username: post.uploader?.username || 'Unknown',
                                         profileImage: post.profilePic ? `${SERVER_URL}${post.profilePic}` : post.uploader?.profilePic ? `${SERVER_URL}${post.uploader.profilePic}` : null,
                                         profileColor: post.profileColor || post.uploader?.profileColor || generateUserColor(post.uploader?.username || ''),
                                         imageUrl: post.imageUrl ? `${SERVER_URL}${post.imageUrl}` : '',
                                         fileUrl: post.fileUrl ? `${SERVER_URL}${post.fileUrl}` : '',
+                                        fileType: post.fileType || '',
                                         timeAgo: formatTimeAgo(new Date(post.createdAt)),
                                         title: post.title,
                                         tags: post.tags || [],
                                         taggedUsers: post.taggedUsers || [],
                                         likeCount: post.likeCount || 0,
-                                        liked: false,
-                                        saved: false
-                                    })));
+                                        liked: likedIds.includes(post._id),
+                                        saved: savedIds.includes(post._id)
+                                    }));
+                                    setPosts(fetchedPosts);
                                 }
-                            });
+                            } catch (error) {
+                                console.error('Error refreshing posts:', error);
+                            }
+                        };
+                        refreshData();
                     }}
                     userData={userData}
                 />

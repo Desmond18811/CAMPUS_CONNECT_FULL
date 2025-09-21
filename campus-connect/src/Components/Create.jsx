@@ -42,7 +42,6 @@ const Create = ({ onClose, userData }) => {
             formData.append('description', description);
             formData.append('subject', 'General');
             formData.append('gradeLevel', 'All');
-            formData.append('resourceType', 'document');
             formData.append('username', userData.username);
             formData.append('profileColor', userData.profileColor);
             if (userData.profileImage) formData.append('profilePic', userData.profileImage);
@@ -216,7 +215,7 @@ const Create = ({ onClose, userData }) => {
                             ref={fileInputRef}
                             style={{ display: 'none' }}
                             onChange={handleFileSelect}
-                            accept=".pdf,.doc,.docx"
+                            accept=".jpeg,.jpg,.png,.gif,.webp,.bmp,.pdf,.doc,.docx,.txt,.rtf,.odt,.ppt,.pptx,.xls,.xlsx,.csv,.mp4,.mov,.avi,.mp3,.wav,.zip,.rar"
                         />
                         <button
                             className="media-button"
