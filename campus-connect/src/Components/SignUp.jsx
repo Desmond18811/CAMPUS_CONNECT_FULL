@@ -82,7 +82,7 @@ const Signup = () => {
             // Store token
             if (response.data.token) {
                 localStorage.setItem('token', response.data.token);
-                navigate('/profile');
+                navigate('/home');
             } else {
                 throw new Error('No token received');
             }
@@ -116,7 +116,7 @@ const Signup = () => {
 
         if (token) {
             localStorage.setItem('token', token);
-            navigate('/profile');
+            navigate('/home');
         }
     }, [navigate]);
 
