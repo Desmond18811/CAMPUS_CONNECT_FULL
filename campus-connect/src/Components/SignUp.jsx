@@ -113,12 +113,35 @@ const Signup = () => {
     React.useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get('token');
+        const error = urlParams.get('error'); // Added this
+
+        if (error) {
+            console.error('OAuth error:', error);
+            setIsGoogleLoading(false);
+            // Optionally setError('Google authentication failed');
+            return;
+        }
 
         if (token) {
-            localStorage.setItem('token', token);
-            navigate('/home');
+            if (isValidToken(token)) { // Add validation
+                localStorage.setItem('token', token);
+
+                // Clean up URL
+                const cleanUrl = window.location.origin + window.location.pathname;
+                window.history.replaceState({}, document.title, cleanUrl);
+
+                navigate('/home');
+            } else {
+                console.error('Invalid token received');
+                setIsGoogleLoading(false);
+            }
         }
     }, [navigate]);
+
+// Add this function (same as in Login.js)
+    const isValidToken = (token) => {
+        return token && typeof token === 'string' && token.split('.').length === 3;
+    };
 
     return (
         <div className="auth-container">

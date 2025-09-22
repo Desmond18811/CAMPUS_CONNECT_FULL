@@ -13,6 +13,7 @@ import Settings from './Components/Settings.jsx';
 import ForgotPassWord from './Components/ForgotPassword.jsx';
 import Comments from './Components/Comments.jsx';
 import LikedPostsPopup from "./Components/LikedPostsPopUp.jsx";
+import AuthSuccess from "./Components/AuthSuccess.jsx";
 
 function App() {
     return (
@@ -32,6 +33,7 @@ function App() {
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/comments" element={<Comments />} />
                 <Route path="/likedPosts" element={<LikedPostsPopup/>} />
+                <Route path="/auth-success" element={<AuthSuccess />} />
                 <Route path="*" element={<LandingPage />} /> {/* Catch-all route */}
             </Routes>
         </Router>
