@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, User, Bell, Heart, Bookmark, MessageCircle, HelpCircle, Shield, UserCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/LikedPostsPopup.css';
 
 const Saved = () => {
     const [activeSection, setActiveSection] = useState('savedPosts');
+    const [posts, setPosts] = useState([]);
+    const [likedIds, setLikedIds] = useState([]);
     const navigate = useNavigate();
+
+    const SERVER_URL = 'https://campcon-test.onrender.com';
 
     const menuItems = [
         {
@@ -38,36 +42,111 @@ const Saved = () => {
         }
     ];
 
-    const likedPosts = [
-        {
-            id: 1,
-            username: 'Username',
-            timeAgo: 'Posted 1s ago',
-            title: 'Document Title',
-            tags: ['purple', 'red', 'orange', 'yellow']
-        },
-        {
-            id: 2,
-            username: 'Username',
-            timeAgo: 'Posted 1s ago',
-            title: 'Document Title',
-            tags: ['purple', 'red', 'orange', 'yellow']
-        },
-        {
-            id: 3,
-            username: 'Username',
-            timeAgo: 'Posted 1s ago',
-            title: 'Document Title',
-            tags: ['purple', 'red', 'orange', 'yellow']
-        },
-        {
-            id: 4,
-            username: 'Username',
-            timeAgo: 'Posted 1s ago',
-            title: 'Document Title',
-            tags: ['purple', 'red', 'orange', 'yellow']
+    const formatTimeAgo = (date) => {
+        const seconds = Math.floor((Date.now() - date) / 1000);
+        if (seconds < 60) return `${seconds}s ago`;
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return `${minutes}m ago`;
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours}h ago`;
+        const days = Math.floor(hours / 24);
+        return `${days}d ago`;
+    };
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/Login');
+            return;
         }
-    ];
+
+        const fetchData = async () => {
+            try {
+                const [savedRes, likedRes] = await Promise.all([
+                    fetch(`${SERVER_URL}/api/resources/saved`, {
+                        headers: { 'Authorization': `Bearer ${token}` },
+                    }),
+                    fetch(`${SERVER_URL}/api/resources/liked`, {
+                        headers: { 'Authorization': `Bearer ${token}` },
+                    })
+                ]);
+
+                const [savedData, likedData] = await Promise.all([
+                    savedRes.json(),
+                    likedRes.json()
+                ]);
+
+                if (savedData.success && likedData.success) {
+                    setLikedIds(likedData.data.map(post => post._id));
+                    const fetchedPosts = savedData.data.map(post => ({
+                        id: post._id,
+                        username: post.uploader?.username || 'Unknown',
+                        timeAgo: formatTimeAgo(new Date(post.createdAt)),
+                        title: post.title,
+                        tags: post.tags || [],
+                        saved: true,
+                        liked: likedData.data.map(p => p._id).includes(post._id),
+                        likeCount: post.likeCount || 0
+                    }));
+                    setPosts(fetchedPosts);
+                } else {
+                    console.error('Failed to fetch saved/liked:', savedData.message || likedData.message);
+                }
+            } catch (error) {
+                console.error('Error fetching saved/liked:', error.message);
+            }
+        };
+
+        fetchData();
+    }, [navigate]);
+
+    const handleSave = async (resourceId) => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`${SERVER_URL}/api/resources/${resourceId}/save`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+            const data = await response.json();
+            if (data.success) {
+                if (!data.saved) {
+                    setPosts(prev => prev.filter(post => post.id !== resourceId));
+                } else {
+                    setPosts(prev => prev.map(post =>
+                        post.id === resourceId
+                            ? { ...post, saved: true }
+                            : post
+                    ));
+                }
+            } else {
+                console.error('Failed to save resource:', data.message);
+            }
+        } catch (error) {
+            console.error('Error saving resource:', error.message);
+        }
+    };
+
+    const handleLike = async (resourceId) => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`${SERVER_URL}/api/resources/${resourceId}/like`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+            const data = await response.json();
+            if (data.success) {
+                setPosts(prev => prev.map(post =>
+                    post.id === resourceId
+                        ? { ...post, liked: data.message === 'Resource liked', likeCount: data.likeCount }
+                        : post
+                ));
+            } else {
+                console.error('Failed to like resource:', data.message);
+            }
+        } catch (error) {
+            console.error('Error liking resource:', error.message);
+        }
+    };
 
     return (
         <div className="liked-posts-container">
@@ -121,11 +200,11 @@ const Saved = () => {
                         </div>
 
                         <div className="posts-grid">
-                            {likedPosts.map((post) => (
+                            {posts.map((post) => (
                                 <div key={post.id} className="liked-post-card">
                                     <div className="liked-post-header">
                                         <div className="post-user">
-                                            <div className="user-avatar">C</div>
+                                            <div className="user-avatar">{post.username.charAt(0).toUpperCase()}</div>
                                             <span className="username">{post.username}</span>
                                         </div>
                                         <button className="more-options">
@@ -156,15 +235,21 @@ const Saved = () => {
 
                                         <div className="post-actions">
                                             <div className="action-buttons">
-                                                <button className="action-btn">
-                                                    <Heart size={18} />
+                                                <button
+                                                    className={`action-btn ${post.liked ? 'liked' : ''}`}
+                                                    onClick={() => handleLike(post.id)}
+                                                >
+                                                    <Heart size={18} fill={post.liked ? 'currentColor' : 'none'} />
                                                 </button>
                                                 <button className="action-btn">
                                                     <MessageCircle size={18} />
                                                 </button>
                                             </div>
-                                            <button className="action-btn">
-                                                <Bookmark size={18} fill="currentColor" />
+                                            <button
+                                                className={`action-btn ${post.saved ? 'saved' : ''}`}
+                                                onClick={() => handleSave(post.id)}
+                                            >
+                                                <Bookmark size={18} fill={post.saved ? 'currentColor' : 'none'} />
                                             </button>
                                         </div>
                                     </div>

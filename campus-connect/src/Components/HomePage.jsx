@@ -16,6 +16,7 @@ import {
 import '../styles/HomePage.css';
 import Create from './Create';
 import SettingsComponent from './Settings';
+import Comments from './Comments';
 import animationData from '../assets/onlineLearning.json';
 import { useNavigate } from 'react-router-dom';
 import Lottie from "lottie-react";
@@ -24,6 +25,8 @@ const Homepage = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
+    const [isCommentsOpen, setIsCommentsOpen] = useState(false);
+    const [selectedResourceId, setSelectedResourceId] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [userData, setUserData] = useState({
         username: '',
@@ -237,6 +240,12 @@ const Homepage = () => {
         setIsSettingsOpen(true);
     };
 
+    const handleOpenComments = (resourceId) => {
+        setSelectedResourceId(resourceId);
+        setIsCommentsOpen(true);
+        setSidebarOpen(false);
+    };
+
     const filteredPosts = posts.filter(post =>
         post.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
         post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -405,7 +414,10 @@ const Homepage = () => {
                                             >
                                                 <Heart size={20} fill={post.liked ? '#ff0000' : 'none'} /> {post.likeCount}
                                             </button>
-                                            <button className="action-btn">
+                                            <button
+                                                className="action-btn"
+                                                onClick={() => handleOpenComments(post.id)}
+                                            >
                                                 <MessageCircle size={20} />
                                             </button>
                                         </div>
@@ -498,6 +510,16 @@ const Homepage = () => {
                         refreshData();
                     }}
                     userData={userData}
+                />
+            )}
+            {isCommentsOpen && (
+                <Comments
+                    resourceId={selectedResourceId}
+                    onClose={() => {
+                        setIsCommentsOpen(false);
+                        setSidebarOpen(true);
+                        navigate('/home');
+                    }}
                 />
             )}
         </div>
