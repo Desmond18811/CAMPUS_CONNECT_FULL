@@ -1,0 +1,187 @@
+/* Outer section */
+.notify-section {
+  padding: 6rem 0 4rem;
+  background: white;
+}
+
+/* Container */
+.notify-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  width: 90%;
+  /* take 90% of viewport width */
+  max-width: 1900px;
+  /* limit max width on very large screens */
+  margin: 0 auto;
+  /* center horizontally */
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Card */
+.notify-card {
+  position: relative;
+  padding: 6rem 22.5rem;
+  background-color: #f0f9ff;
+  /* light blue background */
+  border: 1px solid #bfdbfe;
+  border-radius: 1.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  text-align: center;
+  isolation: isolate;
+
+}
+
+/* Title */
+.notify-title {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #071e37;
+  max-width: 48rem;
+  margin: 0 auto;
+  line-height: 1.1;
+}
+
+/* Paragraph */
+.notify-text {
+  color: #010202;
+  font-size: 1.125rem;
+  max-width: 36rem;
+  margin: 1.5rem auto 0;
+  line-height: 1.55;
+}
+
+/* Form */
+.notify-form {
+  display: flex;
+  gap: 1rem;
+  max-width: 28rem;
+  margin: 2.5rem auto 0;
+}
+
+.notify-input {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(4, 14, 58, 0.373);
+  font-size: 1rem;
+  outline: none;
+}
+
+.notify-input::placeholder {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.notify-button {
+  flex-shrink: 0;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  background: white;
+  color: #1e3a8a;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  transition: all 1s ease;
+}
+
+/* Hover state: turns into a circle */
+.notify-button:hover {
+  background: #0e5eb3;
+  color: white;
+}
+
+/* Background SVG */
+.notify-svg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 64rem;
+  height: 64rem;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+/* --------- Responsive Styles --------- */
+
+/* Large screens (default styles you already have) */
+
+/* Medium screens (tablets, <= 1024px) */
+@media (max-width: 1024px) {
+  .notify-card {
+    padding: 4rem 8rem;
+    /* reduce side padding */
+  }
+
+  .notify-title {
+    font-size: 2rem;
+  }
+
+  .notify-text {
+    font-size: 1rem;
+  }
+}
+
+/* Small screens (phones, <= 768px) */
+@media (max-width: 768px) {
+  .notify-container {
+    gap: 2rem;
+  }
+
+  .notify-card {
+    padding: 3rem 2rem;
+    /* tighter padding */
+    text-align: center;
+  }
+
+  .notify-title {
+    font-size: 1.75rem;
+    line-height: 1.2;
+  }
+
+  .notify-text {
+    font-size: 0.95rem;
+    margin-top: 1rem;
+  }
+
+  /* Stack form elements vertically */
+  .notify-form {
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .notify-input,
+  .notify-button {
+    width: 100%;
+    font-size: 1rem;
+  }
+}
+
+/* Extra small screens (<= 480px) */
+@media (max-width: 480px) {
+  .notify-card {
+    padding: 2rem 1.5rem;
+    border-radius: 1rem;
+  }
+
+  .notify-title {
+    font-size: 1.5rem;
+  }
+
+  .notify-text {
+    font-size: 0.9rem;
+  }
+
+  .notify-input {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .notify-button {
+    padding: 0.5rem 0.75rem;
+  }
+}

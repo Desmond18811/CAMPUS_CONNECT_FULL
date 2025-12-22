@@ -1,0 +1,194 @@
+/* Section container */
+.why {
+  padding: 4rem 2rem;
+  background: #f9fbff; /* soft background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-size: cover;
+  height: 100vh;
+}
+
+/* Flex layout for animation + content */
+.why-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+ width: 100%;
+  max-width: 1900px;     /* limit max width on very large screens */
+  margin: 0 auto;         /* center horizontally */
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (min-width: 768px) {
+  .why-container {
+    flex-direction: row;
+    padding: 0 3rem;
+  }
+}
+
+/* Left animation side */
+.why-animation {
+  background-color: #f0f9ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.2);
+  flex: 1;                       /* let it share space */
+  max-width: 700px;              /* cap width */
+  display: flex;
+  justify-content: center;
+  height: 640px;
+}
+
+.why-animation lottie-player,
+.why-animation canvas {
+  max-width: 300px;
+  height: auto;
+}
+
+/* Right content side */
+.why-content {
+  flex: 1;                       /* take remaining space */
+  max-width: 700px;
+  padding: 0 1rem;
+  text-align: center;
+  margin: 0;                     /* remove auto margin pushing it down */
+}
+
+/* Title */
+.why-title {
+  font-size: 4rem;
+  font-weight: 700;
+  color: #007BFF;
+  margin-bottom: 2.9rem;
+}
+
+/* Grid for reasons */
+.reasons-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(250px, 1fr)); /* 2 per row */
+  gap: 1.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+}
+
+/* Each reason card */
+.reasons {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  width: 100%;                /* card fills its grid cell */
+  max-width: 490px;           /* prevents overly wide cards */
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background-color: #f0f9ff;
+  border: 1px solid #bfdbfe;
+  text-align: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  text-align: left;
+}
+
+.reasons:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Icon */
+.reason-icon {
+  font-size: 2rem;
+  color: #007BFF;
+  flex-shrink: 0;
+}
+
+/* Heading inside card */
+.reasons h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #222;
+}
+
+/* Supporting text */
+.reasons p {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+/* Stack to one column on small screens */
+@media (max-width: 900px) {
+  .why-container {
+    flex-direction: column;   /* stack animation above content */
+    align-items: center;
+  }
+
+  .reasons-grid {
+    grid-template-columns: 1fr;
+    max-width: 560px;
+  }
+}
+
+/* ======================= MOBILE RESPONSIVE ======================= */
+@media (max-width: 600px) {
+  .why {
+    padding: 2rem 1rem;       /* less padding for small screens */
+    height: auto;             /* allow natural content height */
+  }
+
+  .why-container {
+    flex-direction: column;   /* stack vertically */
+    gap: 1.5rem;
+    padding: 0 1rem;
+  }
+
+  .why-animation {
+    height: 320px;            /* shrink animation box */
+    max-width: 100%;
+    padding: 0.5rem;
+  }
+
+  .why-animation lottie-player,
+  .why-animation canvas {
+    max-width: 200px;         /* smaller animation */
+  }
+
+  .why-content {
+    padding: 0;
+    text-align: left;         /* better readability on mobile */
+  }
+
+  .why-title {
+    font-size: 2rem;          /* smaller title */
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .reasons-grid {
+    grid-template-columns: 1fr; /* single column grid */
+    gap: 1rem;
+  }
+
+  .reasons {
+    max-width: 100%;          /* stretch full width */
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .reasons h3 {
+    font-size: 1rem;          /* shrink heading */
+  }
+
+  .reasons p {
+    font-size: 0.85rem;       /* smaller text */
+    line-height: 1.4;
+  }
+
+  .reason-icon {
+    font-size: 1.5rem;        /* smaller icons */
+  }
+}

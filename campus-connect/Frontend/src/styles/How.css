@@ -1,0 +1,239 @@
+/* Section container */
+.how-section {
+  padding: 4rem 2rem;
+  /* spacing inside the section */
+  background: #f9fbff;
+  /* soft background */
+  display: flex;
+  /* enable flexbox */
+  justify-content: center;
+  /* center horizontally */
+  align-items: center;
+  /* center vertically */
+  background-size: cover;
+  height: 100vh;
+  /* full viewport height */
+}
+
+/* Flex layout for left animation + right content */
+.how-content {
+  display: flex;
+  flex-direction: column;
+  /* stack vertically on small screens */
+  gap: 2.5rem;
+  /* space between animation & content */
+  width: 90%;
+  /* take 90% of viewport width */
+  max-width: 1900px;
+  /* cap width for big screens */
+  margin: 0 auto;
+  /* center horizontally */
+  align-items: center;
+  /* center content */
+  justify-content: space-between;
+}
+
+/* On medium+ screens, switch to row layout */
+@media (min-width: 768px) {
+  .how-content {
+    flex-direction: row;
+    /* place animation left, content right */
+    padding: 0 3rem;
+    /* add side padding */
+  }
+}
+
+/* Left animation box */
+/* Left animation box */
+.left-animation {
+  background-color: #f0f9ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.2);
+  flex: 1;
+  /* let it share space */
+  max-width: 700px;
+  /* cap width */
+  display: flex;
+  justify-content: center;
+  height: 700px;
+}
+
+.left-animation lottie-player,
+.left-animation canvas {
+  max-width: 300px;
+  height: auto;
+}
+
+
+
+
+/* Right content area */
+.how-right {
+  flex: 1;
+  /* take remaining width */
+  max-width: 700px;
+  padding: 0 1rem;
+  text-align: center;
+  /* center by default */
+  margin: 0;
+}
+
+/* Title */
+.how-title {
+  font-size: 4rem;
+  font-weight: 700;
+  color: #007BFF;
+  margin-bottom: 2.9rem;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Grid for steps */
+.how-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(250px, 1fr));
+  /* 2 per row */
+  gap: 1.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+}
+
+/* Each reason card */
+.how-step {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 1rem;
+  width: auto;
+  /* card fills its grid cell */
+  max-width: 300px;
+  /* prevents overly wide cards */
+  height: auto;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background-color: #f0f9ff;
+  border: 1px solid #bfdbfe;
+  text-align: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  text-align: left;
+
+}
+
+.how-step:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Icon */
+.how-icon {
+  font-size: 2rem;
+  color: #007BFF;
+  flex-shrink: 0;
+}
+
+/* Heading inside card */
+.how h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #222;
+}
+
+/* Supporting text */
+.how p {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+
+
+/* Stack to one column on small screens */
+@media (max-width: 900px) {
+  .how-content {
+    flex-direction: column;
+    /* stack animation above content */
+    align-items: center;
+  }
+
+  .how-boxes {
+    grid-template-columns: 1fr;
+    /* one per row */
+    max-width: 560px;
+  }
+}
+
+/* ======================= MOBILE RESPONSIVE ======================= */
+@media (max-width: 600px) {
+  .how-section {
+    padding: 2rem 1rem;
+    /* reduce padding on small screens */
+    height: auto;
+    /* allow natural height */
+  }
+
+  .how-content {
+    flex-direction: column;
+    /* stack everything vertically */
+    gap: 1.5rem;
+    padding: 0 1rem;
+  }
+
+  .left-animation {
+    height: 350px;
+    /* shrink animation height */
+    max-width: 100%;
+    padding: 0.5rem;
+  }
+
+  .left-animation lottie-player,
+  .left-animation canvas {
+    max-width: 200px;
+    /* smaller animation */
+  }
+
+  .how-right {
+    padding: 0;
+    text-align: left;
+    /* align text left for readability */
+  }
+
+  .how-title {
+    font-size: 2rem;
+    /* shrink title */
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .how-grid {
+    grid-template-columns: 1fr;
+    /* single column */
+    gap: 1rem;
+  }
+
+  .how-step {
+    max-width: 100%;
+    /* let cards fill width */
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .how-step h3 {
+    font-size: 1rem;
+  }
+
+  .how-step p {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  .how-icon {
+    font-size: 1.5rem;
+    /* slightly smaller icons */
+  }
+}

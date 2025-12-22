@@ -1,0 +1,409 @@
+
+/* LikedPostsPopup.css */
+
+.liked-posts-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #f9fafb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.open-liked-posts-button {
+    background-color: #2563eb;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 12px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.2s;
+}
+
+.open-liked-posts-button:hover {
+    background-color: #1d4ed8;
+}
+
+.liked-posts-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 40;
+}
+
+.liked-posts-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border-radius: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    width: 95vw;
+    max-width: 1200px;
+    height: 90vh;
+    max-height: 800px;
+    z-index: 50;
+    overflow: hidden;
+}
+
+.liked-posts-layout {
+    display: flex;
+    height: 100%;
+}
+
+/* Left Sidebar */
+.liked-posts-sidebar {
+    width: 320px;
+    padding: 32px 24px;
+    background-color: #fafafa;
+    border-right: 1px solid #e5e7eb;
+    overflow-y: auto;
+}
+
+.liked-posts-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 32px 0;
+}
+
+.menu-section {
+    margin-bottom: 32px;
+}
+
+.menu-category {
+    font-size: 14px;
+    font-weight: 600;
+    color: #6b7280;
+    margin: 0 0 16px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 4px;
+    text-align: left;
+}
+
+.menu-item:hover {
+    background-color: #e5e7eb;
+}
+
+.menu-item.active {
+    background-color: #e5e7eb;
+    color: #111827;
+}
+
+.menu-icon {
+    width: 20px;
+    height: 20px;
+    color: #6b7280;
+}
+
+.menu-item.active .menu-icon {
+    color: #374151;
+}
+
+/* Vertical Divider */
+.liked-posts-divider {
+    width: 1px;
+    background-color: #2e82ff;
+}
+
+/* Right Content */
+.liked-posts-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.content-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32px 40px 24px 40px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.content-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.close-button {
+    padding: 8px;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #6b7280;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-button:hover {
+    background-color: #f3f4f6;
+}
+
+.close-button svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* Posts Grid */
+.posts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    padding: 24px 40px 40px 40px;
+}
+
+.liked-post-card {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+}
+
+.liked-post-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Post Header */
+.liked-post-header {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.post-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-avatar {
+    width: 24px;
+    height: 24px;
+    background-color: #1d4ed8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+    color: white;
+}
+
+.username {
+    font-weight: 500;
+    color: #111827;
+    font-size: 14px;
+}
+
+.more-options {
+    padding: 4px;
+    background: none;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #6b7280;
+    transition: background-color 0.2s;
+}
+
+.more-options:hover {
+    background-color: #f3f4f6;
+}
+
+/* Document Preview */
+.document-preview {
+    padding: 20px;
+    background-color: #f9fafb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 140px;
+}
+
+.document-placeholder {
+    background-color: white;
+    border-radius: 8px;
+    border: 2px dashed #e5e7eb;
+    width: 100%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #d1d5db;
+}
+
+/* Post Footer */
+.liked-post-footer {
+    padding: 16px;
+}
+
+.post-time {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.tags {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.tag {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+}
+
+.tag-red {
+    background-color: #ef4444;
+}
+
+.tag-blue {
+    background-color: #3b82f6;
+}
+
+.tag-orange {
+    background-color: #f97316;
+}
+
+.tag-green {
+    background-color: #10b981;
+}
+
+.tag-purple {
+    background-color: #8b5cf6;
+}
+
+.tag-yellow {
+    background-color: #fbbf24;
+}
+
+.post-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 12px;
+}
+
+.post-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    padding: 6px;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    color: #6b7280;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.action-btn:hover {
+    background-color: #f3f4f6;
+}
+
+.action-btn.liked {
+    color: #ef4444;
+}
+
+.action-btn.liked:hover {
+    background-color: #fef2f2;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .liked-posts-modal {
+        width: 98vw;
+        height: 95vh;
+    }
+
+    .liked-posts-sidebar {
+        width: 280px;
+    }
+
+    .posts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .liked-posts-layout {
+        flex-direction: column;
+    }
+
+    .liked-posts-sidebar {
+        width: 100%;
+        height: 200px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 20px;
+    }
+
+    .menu-section {
+        display: inline-flex;
+        gap: 8px;
+        margin-right: 24px;
+        margin-bottom: 0;
+        flex-direction: column;
+        min-width: 200px;
+    }
+
+    .content-header,
+    .posts-grid {
+        padding: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .liked-posts-modal {
+        border-radius: 16px;
+    }
+}

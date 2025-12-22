@@ -1,0 +1,204 @@
+/* HERO SECTION */
+.hero {
+  background-color: #ffffff;
+  padding: 8rem 2rem 4rem;
+  /* increased top padding */
+  min-height: 60vh;
+  /* use min-height instead of fixed height */
+  /* desktop default */
+  display: flex;
+  align-items: center;
+  /* vertically center content */
+}
+
+/* Container */
+.hero-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  width: 100%;
+  max-width: 1900px;
+  margin: 0 auto;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: 3rem;
+  /* pushes hero down below navbar */
+
+
+}
+
+@media (min-width: 768px) {
+  .hero-container {
+    flex-direction: row;
+    padding: 0 3rem;
+  }
+}
+
+/* Hero text */
+.hero-content {
+  color: #1e3a8a;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .hero-content {
+    text-align: left;
+    width: 50%;
+  }
+}
+
+/* Hero Title */
+.hero-title {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+@media (min-width: 768px) {
+  .hero-title {
+    font-size: 2.75rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .hero-title {
+    font-size: 3.25rem;
+  }
+}
+
+/* Hero Subtitle */
+.hero-subtitle {
+  font-size: 1rem;
+  color: #2563eb;
+}
+
+@media (min-width: 768px) {
+  .hero-subtitle {
+    font-size: 1.25rem;
+  }
+}
+
+/* Hero Description */
+.hero-desc {
+  font-size: 0.95rem;
+  color: #3b82f6;
+}
+
+@media (min-width: 768px) {
+  .hero-desc {
+    font-size: 1.1rem;
+  }
+}
+
+/* Hero Button */
+.hero-btn {
+  margin-top: 1rem;
+  background-color: #2563eb;
+  color: #fff;
+  padding: 1rem 2.5rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.hero-btn:hover {
+  background-color: #1d4ed8;
+}
+
+/* Hero Animation Box */
+.hero-animation {
+  background-color: #f0f9ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.2);
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  justify-content: center;
+}
+
+.hero-icon {
+  color: #3b82f6;
+}
+
+/* ======================= RESPONSIVE BREAKPOINTS ======================= */
+
+/* Tablets (portrait & small landscape) */
+@media (max-width: 1024px) {
+  .hero {
+    height: auto;
+    /* allow flexible height */
+    padding: 4rem 1.5rem;
+  }
+
+  .hero-animation {
+    max-width: 320px;
+    /* shrink animation */
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .hero {
+    height: auto;
+    /* prevent cutoff */
+    padding: 3rem 1rem;
+  }
+
+  .hero-container {
+    gap: 2rem;
+  }
+
+  .hero-title {
+    font-size: 1.75rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .hero-desc {
+    font-size: 0.9rem;
+  }
+
+  .hero-animation {
+    max-width: 260px;
+  }
+
+  .hero-btn {
+    padding: 0.85rem 2rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Extra Small (phones <480px) */
+@media (max-width: 480px) {
+  .hero {
+    padding: 2.5rem 1rem;
+  }
+
+  .hero-title {
+    font-size: 1.5rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .hero-desc {
+    font-size: 0.85rem;
+  }
+
+  .hero-btn {
+    width: 100%;
+    /* full width button */
+  }
+}

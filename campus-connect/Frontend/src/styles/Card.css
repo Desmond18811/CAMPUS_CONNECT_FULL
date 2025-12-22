@@ -1,0 +1,118 @@
+/* ----------------- Card Container ----------------- */
+.card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 320px;
+  margin: 12px auto;
+  display: flex;
+  flex-direction: column;
+  color: #1e3a8a;
+  overflow: hidden;
+  /* image can touch top */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  height: 50vh;
+}
+
+/* Card hover effect */
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Card image container - stretch slightly outside the card */
+.card-image {
+  width: 105%;
+  /* slightly wider than card */
+  height: 180px;
+  /* slightly taller */
+  margin: -8px -8px 0 -8px;
+  /* pull image outside top and sides */
+  overflow: hidden;
+}
+
+/* Logo inside image container */
+.card-image img {
+  width: 100%;
+  /* fill the container */
+  height: 100%;
+  /* fill container height */
+  object-fit: cover;
+  /* crop nicely */
+  border-top-left-radius: 12px;
+  /* match card rounding on top */
+  border-top-right-radius: 12px;
+  border: 2px solid #1d4ed8;
+}
+
+
+/* Card content */
+.card-content {
+  padding: 16px;
+  /* space around text */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Title */
+.card-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  text-align: left;
+  margin: 0;
+}
+
+/* Description */
+.card-description {
+  font-size: 1rem;
+  color: #1e3a8a;
+  text-align: left;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Card button */
+.card-btn {
+  margin-top: 12px;
+  padding: 9px;
+  background: none;
+  color: #1d4ed8;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: background 0.2s ease;
+}
+
+.card-btn:hover {
+  background-color: #1d4ed8;
+  color: white;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .card {
+    max-width: 280px;
+  }
+
+  .card-image {
+    height: 130px;
+  }
+}
+
+@media (max-width: 768px) {
+  .card {
+    max-width: 90%;
+  }
+
+  .card-image {
+    height: 120px;
+  }
+}
