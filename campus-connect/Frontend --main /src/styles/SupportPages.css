@@ -2,16 +2,16 @@
 .support-page {
     min-height: 100vh;
     background: linear-gradient(135deg, #f0f4ff 0%, #e8f4f8 100%);
-    padding: 40px 48px;
-    width: 100%;
+    padding: 40px;
+    width: 100vw;
+    max-width: 100%;
     box-sizing: border-box;
+    overflow-x: hidden;
 }
 
-.support-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 40px;
+.support-content {
+    width: 100%;
+    max-width: none;
 }
 
 .support-header .back-btn {

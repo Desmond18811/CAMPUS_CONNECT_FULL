@@ -2,16 +2,23 @@
 .explore-page {
     min-height: 100vh;
     background: linear-gradient(135deg, #f0f4ff 0%, #e8f4f8 100%);
-    padding: 32px 48px;
-    width: 100%;
+    padding: 24px;
+    width: 100vw;
+    /* Force full viewport width */
+    max-width: 100%;
     box-sizing: border-box;
+    overflow-x: hidden;
+    /* Prevent scrollbar if width is slightly off */
 }
 
-.explore-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 32px;
+.explore-header,
+.explore-search,
+.explore-categories,
+.explore-toolbar,
+.explore-resources {
+    width: 100%;
+    max-width: none;
+    /* Remove any max-width constraints */
 }
 
 .explore-header .back-btn {
@@ -191,7 +198,8 @@
 /* Full Width Grid */
 .explore-resources.grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    /* auto-fit fills the space */
     gap: 24px;
     width: 100%;
 }
