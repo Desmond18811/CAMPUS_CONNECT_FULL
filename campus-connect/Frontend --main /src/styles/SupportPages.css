@@ -14,6 +14,13 @@
     max-width: none;
 }
 
+.support-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
 .support-header .back-btn {
     background: white;
     border: 1px solid #e5e7eb;
@@ -41,10 +48,6 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-}
-
-.support-content {
-    width: 100%;
 }
 
 .loading-container {
@@ -104,8 +107,9 @@
 
 .help-topics {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    width: 100%;
 }
 
 .help-topic-card {
@@ -247,8 +251,9 @@
 
 .privacy-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    width: 100%;
 }
 
 .privacy-card {
@@ -378,8 +383,9 @@
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    width: 100%;
 }
 
 .stat-card {
