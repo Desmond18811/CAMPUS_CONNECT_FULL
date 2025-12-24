@@ -42,6 +42,7 @@
     }
 }
 
+/* --- UPDATED CLOSE BUTTON --- */
 .close-btn {
     position: absolute;
     top: 15px;
@@ -49,8 +50,9 @@
     background: #f3f4f6;
     border: none;
     color: #374151;
-    width: 40px;
-    height: 40px;
+    /* Large but tight container so icon fills it */
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
@@ -58,10 +60,13 @@
     justify-content: center;
     transition: all 0.2s;
     z-index: 10;
+    padding: 0;
+    /* Remove padding to let icon fill */
 }
 
 .close-btn:hover {
-    background: #e5e7eb;
+    background: #ef4444;
+    color: white;
     transform: scale(1.1);
 }
 
@@ -376,9 +381,11 @@
     color: #9ca3af;
 }
 
+/* --- UPDATED SEND BUTTON --- */
 .send-btn {
-    width: 40px;
-    height: 40px;
+    /* Large 50px circle to accommodate the big icon */
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background: linear-gradient(135deg, #2563eb, #1d4ed8);
     border: none;
@@ -388,15 +395,19 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
+    flex-shrink: 0;
+    padding: 0;
 }
 
 .send-btn:hover:not(:disabled) {
     transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
 .send-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    background: #9ca3af;
 }
 
 .loading-spinner {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Download, Heart, MessageCircle, SendHorizontal, User, ThumbsUp, ThumbsDown, Loader, Share2, FileText, Music, Video, Image } from 'lucide-react';
+import { X, Download, MessageCircle, Send, User, ThumbsUp, ThumbsDown, Loader, Share2, FileText, Music } from 'lucide-react';
 import { useSocket } from '../Context/SocketContext';
 import '../styles/ResourceDetail.css';
 
@@ -51,16 +51,13 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
             fetchResourceDetails();
             fetchComments();
 
-            // Join resource room for real-time updates
             if (socket) {
                 socket.emit('joinResource', resourceId);
 
-                // Listen for new comments
                 socket.on('newComment', (comment) => {
                     setComments(prev => [...prev, comment]);
                 });
 
-                // Listen for comment updates
                 socket.on('commentUpdated', (updatedComment) => {
                     setComments(prev => prev.map(c =>
                         c._id === updatedComment._id ? updatedComment : c
@@ -115,7 +112,6 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
         e.preventDefault();
         if (!newComment.trim() || isSubmitting) return;
 
-        // Optimistic update
         const optimisticComment = {
             _id: `temp-${Date.now()}`,
             text: newComment,
@@ -140,17 +136,14 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
             });
             const data = await response.json();
             if (data.success) {
-                // Replace optimistic comment with real one
                 setComments(prev => prev.map(c =>
                     c._id === optimisticComment._id ? data.data : c
                 ));
             } else {
-                // Rollback on failure
                 setComments(prev => prev.filter(c => c._id !== optimisticComment._id));
             }
         } catch (error) {
             console.error('Error posting comment:', error);
-            // Rollback on error
             setComments(prev => prev.filter(c => c._id !== optimisticComment._id));
         } finally {
             setIsSubmitting(false);
@@ -158,10 +151,8 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
     };
 
     const handleLikeComment = async (commentId) => {
-        // Skip if it's a temporary optimistic comment
         if (String(commentId).startsWith('temp-')) return;
 
-        // Optimistic update
         setComments(prev => prev.map(c =>
             c._id === commentId ? { ...c, likes: (c.likes || 0) + 1, userLiked: true } : c
         ));
@@ -174,7 +165,6 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
             });
         } catch (error) {
             console.error('Error liking comment:', error);
-            // Rollback on error
             setComments(prev => prev.map(c =>
                 c._id === commentId ? { ...c, likes: (c.likes || 0) - 1, userLiked: false } : c
             ));
@@ -182,10 +172,8 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
     };
 
     const handleDislikeComment = async (commentId) => {
-        // Skip if it's a temporary optimistic comment
         if (String(commentId).startsWith('temp-')) return;
 
-        // Optimistic update
         setComments(prev => prev.map(c =>
             c._id === commentId ? { ...c, dislikes: (c.dislikes || 0) + 1, userDisliked: true } : c
         ));
@@ -198,7 +186,6 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
             });
         } catch (error) {
             console.error('Error disliking comment:', error);
-            // Rollback on error
             setComments(prev => prev.map(c =>
                 c._id === commentId ? { ...c, dislikes: (c.dislikes || 0) - 1, userDisliked: false } : c
             ));
@@ -242,53 +229,32 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
     return (
         <div className="resource-detail-overlay" onClick={onClose}>
             <div className="resource-detail-modal" onClick={(e) => e.stopPropagation()}>
+                {/* CLOSE ICON: Size increased to 36 and stroke thickened */}
                 <button className="close-btn" onClick={onClose}>
-                    <X size={24} />
+                    <X size={36} strokeWidth={3} />
                 </button>
 
                 <div className="resource-detail-content">
-                    {/* Resource Preview Section */}
                     <div className="resource-preview-section">
-                        {/* Smart Preview based on file type */}
                         {(() => {
                             const fileType = getFileType(resource?.fileUrl);
                             const fileUrl = resource?.fileUrl || resource?.imageUrl;
 
                             if (fileType === 'image' || resource?.imageUrl) {
-                                return (
-                                    <img
-                                        src={resource?.imageUrl || fileUrl}
-                                        alt={resource?.title}
-                                        className="resource-preview-image"
-                                    />
-                                );
+                                return <img src={resource?.imageUrl || fileUrl} alt={resource?.title} className="resource-preview-image" />;
                             } else if (fileType === 'video') {
-                                return (
-                                    <video
-                                        controls
-                                        className="resource-preview-video"
-                                        src={fileUrl}
-                                    >
-                                        Your browser does not support video playback.
-                                    </video>
-                                );
+                                return <video controls className="resource-preview-video" src={fileUrl}>Your browser does not support video playback.</video>;
                             } else if (fileType === 'audio') {
                                 return (
                                     <div className="resource-preview-audio">
                                         <Music size={48} />
-                                        <audio controls src={fileUrl}>
-                                            Your browser does not support audio playback.
-                                        </audio>
+                                        <audio controls src={fileUrl}>Your browser does not support audio playback.</audio>
                                     </div>
                                 );
                             } else if (fileType === 'pdf') {
                                 return (
                                     <div className="resource-preview-pdf">
-                                        <iframe
-                                            src={fileUrl}
-                                            title={resource?.title}
-                                            className="pdf-viewer"
-                                        />
+                                        <iframe src={fileUrl} title={resource?.title} className="pdf-viewer" />
                                     </div>
                                 );
                             } else {
@@ -303,12 +269,8 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
 
                         <div className="resource-info">
                             <h2 className="resource-title">{resource?.title}</h2>
-                            <p className="resource-uploader">
-                                Uploaded by <strong>@{resource?.uploader?.username || 'Unknown'}</strong>
-                            </p>
-                            {resource?.description && (
-                                <p className="resource-description">{resource.description}</p>
-                            )}
+                            <p className="resource-uploader">Uploaded by <strong>@{resource?.uploader?.username || 'Unknown'}</strong></p>
+                            {resource?.description && <p className="resource-description">{resource.description}</p>}
                             <div className="resource-tags">
                                 {resource?.tags?.map((tag, index) => (
                                     <span key={index} className="resource-tag">#{tag}</span>
@@ -316,24 +278,19 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
                             </div>
                         </div>
 
-                        {/* Action Buttons */}
                         <div className="resource-actions">
                             <button className="download-btn" onClick={handleDownload}>
-                                <Download size={20} />
-                                Download
+                                <Download size={20} /> Download
                             </button>
                             <button className="share-btn" onClick={handleShareDownloadLink}>
-                                <Share2 size={20} />
-                                Share Link
+                                <Share2 size={20} /> Share Link
                             </button>
                         </div>
                     </div>
 
-                    {/* Comments Section */}
                     <div className="comments-section">
                         <h3 className="comments-header">
-                            <MessageCircle size={20} />
-                            Comments ({comments.length})
+                            <MessageCircle size={20} /> Comments ({comments.length})
                         </h3>
 
                         <div className="comments-list">
@@ -348,36 +305,20 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
                                 comments.map((comment, index) => (
                                     <div key={comment._id || index} className="comment-item">
                                         <div className="comment-avatar">
-                                            {comment.user?.profilePic ? (
-                                                <img src={comment.user.profilePic} alt="" />
-                                            ) : (
-                                                <User size={20} />
-                                            )}
+                                            {comment.user?.profilePic ? <img src={comment.user.profilePic} alt="" /> : <User size={20} />}
                                         </div>
                                         <div className="comment-body">
                                             <div className="comment-header">
-                                                <span className="comment-username">
-                                                    @{comment.user?.username || 'Anonymous'}
-                                                </span>
-                                                <span className="comment-time">
-                                                    {formatTimeAgo(comment.createdAt)}
-                                                </span>
+                                                <span className="comment-username">@{comment.user?.username || 'Anonymous'}</span>
+                                                <span className="comment-time">{formatTimeAgo(comment.createdAt)}</span>
                                             </div>
                                             <p className="comment-text">{comment.text}</p>
                                             <div className="comment-actions">
-                                                <button
-                                                    className={`comment-action-btn ${comment.userLiked ? 'active' : ''}`}
-                                                    onClick={() => handleLikeComment(comment._id)}
-                                                >
-                                                    <ThumbsUp size={14} />
-                                                    <span>{comment.likes || 0}</span>
+                                                <button className={`comment-action-btn ${comment.userLiked ? 'active' : ''}`} onClick={() => handleLikeComment(comment._id)}>
+                                                    <ThumbsUp size={14} /> <span>{comment.likes || 0}</span>
                                                 </button>
-                                                <button
-                                                    className={`comment-action-btn ${comment.userDisliked ? 'active' : ''}`}
-                                                    onClick={() => handleDislikeComment(comment._id)}
-                                                >
-                                                    <ThumbsDown size={14} />
-                                                    <span>{comment.dislikes || 0}</span>
+                                                <button className={`comment-action-btn ${comment.userDisliked ? 'active' : ''}`} onClick={() => handleDislikeComment(comment._id)}>
+                                                    <ThumbsDown size={14} /> <span>{comment.dislikes || 0}</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -386,7 +327,6 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
                             )}
                         </div>
 
-                        {/* Comment Input */}
                         <form className="comment-input-form" onSubmit={handleSubmitComment}>
                             <div className="comment-input-wrapper">
                                 <input
@@ -401,7 +341,8 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
                                     disabled={!newComment.trim() || isSubmitting}
                                     className="send-btn"
                                 >
-                                    <SendHorizontal size={18} />
+                                    {/* SEND ICON: Size increased to 30 to fill the circle better */}
+                                    <Send size={30} strokeWidth={2.5} style={{ marginLeft: '-3px', marginTop: '2px' }} />
                                 </button>
                             </div>
                         </form>
