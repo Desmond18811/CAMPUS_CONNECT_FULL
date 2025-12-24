@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Download, Heart, Bookmark, MessageCircle, Send, User } from 'lucide-react';
+import { X, Download, Heart, MessageCircle, Send, User, ThumbsUp, ThumbsDown, Loader } from 'lucide-react';
 import { useSocket } from '../Context/SocketContext';
 import '../styles/ResourceDetail.css';
 
@@ -8,6 +8,7 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+    const [isCommentsLoading, setIsCommentsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const socket = useSocket();
 
@@ -61,9 +62,10 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
     };
 
     const fetchComments = async () => {
+        setIsCommentsLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${SERVER_URL}/api/resources/${resourceId}/comments`, {
+            const response = await fetch(`${SERVER_URL}/api/comments/${resourceId}/comments`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();
@@ -72,6 +74,8 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
             }
         } catch (error) {
             console.error('Error fetching comments:', error);
+        } finally {
+            setIsCommentsLoading(false);
         }
     };
 
@@ -79,29 +83,79 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
         e.preventDefault();
         if (!newComment.trim() || isSubmitting) return;
 
+        // Optimistic update
+        const optimisticComment = {
+            _id: `temp-${Date.now()}`,
+            text: newComment,
+            user: { username: userData?.username || 'You', profilePic: userData?.profileImage },
+            createdAt: new Date().toISOString(),
+            likes: 0,
+            dislikes: 0
+        };
+        setComments(prev => [...prev, optimisticComment]);
+        setNewComment('');
         setIsSubmitting(true);
+
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${SERVER_URL}/api/resources/${resourceId}/comments`, {
+            const response = await fetch(`${SERVER_URL}/api/comments/${resourceId}/comments`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ text: newComment })
+                body: JSON.stringify({ text: optimisticComment.text })
             });
             const data = await response.json();
             if (data.success) {
-                setNewComment('');
-                // Socket will broadcast the new comment
-                if (!socket) {
-                    setComments(prev => [...prev, data.data]);
-                }
+                // Replace optimistic comment with real one
+                setComments(prev => prev.map(c =>
+                    c._id === optimisticComment._id ? data.data : c
+                ));
+            } else {
+                // Rollback on failure
+                setComments(prev => prev.filter(c => c._id !== optimisticComment._id));
             }
         } catch (error) {
             console.error('Error posting comment:', error);
+            // Rollback on error
+            setComments(prev => prev.filter(c => c._id !== optimisticComment._id));
         } finally {
             setIsSubmitting(false);
+        }
+    };
+
+    const handleLikeComment = async (commentId) => {
+        // Optimistic update
+        setComments(prev => prev.map(c =>
+            c._id === commentId ? { ...c, likes: (c.likes || 0) + 1, userLiked: true } : c
+        ));
+
+        try {
+            const token = localStorage.getItem('token');
+            await fetch(`${SERVER_URL}/api/comments/comments/${commentId}/like`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+        } catch (error) {
+            console.error('Error liking comment:', error);
+        }
+    };
+
+    const handleDislikeComment = async (commentId) => {
+        // Optimistic update
+        setComments(prev => prev.map(c =>
+            c._id === commentId ? { ...c, dislikes: (c.dislikes || 0) + 1, userDisliked: true } : c
+        ));
+
+        try {
+            const token = localStorage.getItem('token');
+            await fetch(`${SERVER_URL}/api/comments/comments/${commentId}/dislike`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+        } catch (error) {
+            console.error('Error disliking comment:', error);
         }
     };
 
@@ -190,7 +244,12 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
                         </h3>
 
                         <div className="comments-list">
-                            {comments.length === 0 ? (
+                            {isCommentsLoading ? (
+                                <div className="comments-loader">
+                                    <Loader className="loader-spin" size={24} />
+                                    <span>Loading comments...</span>
+                                </div>
+                            ) : comments.length === 0 ? (
                                 <p className="no-comments">No comments yet. Be the first to comment!</p>
                             ) : (
                                 comments.map((comment, index) => (
@@ -212,6 +271,22 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
                                                 </span>
                                             </div>
                                             <p className="comment-text">{comment.text}</p>
+                                            <div className="comment-actions">
+                                                <button
+                                                    className={`comment-action-btn ${comment.userLiked ? 'active' : ''}`}
+                                                    onClick={() => handleLikeComment(comment._id)}
+                                                >
+                                                    <ThumbsUp size={14} />
+                                                    <span>{comment.likes || 0}</span>
+                                                </button>
+                                                <button
+                                                    className={`comment-action-btn ${comment.userDisliked ? 'active' : ''}`}
+                                                    onClick={() => handleDislikeComment(comment._id)}
+                                                >
+                                                    <ThumbsDown size={14} />
+                                                    <span>{comment.dislikes || 0}</span>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 ))

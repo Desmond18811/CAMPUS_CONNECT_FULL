@@ -11,7 +11,10 @@ import {
     MoreHorizontal,
     MessageCircle,
     Edit,
-    X
+    X,
+    Share2,
+    Copy,
+    Check
 } from 'lucide-react';
 import '../styles/HomePage.css';
 import Create from './Create';
@@ -20,7 +23,7 @@ import ResourceDetailPopup from './ResourceDetailPopup';
 import animationData from '../assets/onlineLearning.json';
 import { useNavigate } from 'react-router-dom';
 import Lottie from "lottie-react";
-import { useSocket } from '../Context/SocketContext'; // Import useSocket
+import { useSocket } from '../Context/SocketContext';
 
 const Homepage = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -29,6 +32,9 @@ const Homepage = () => {
     const [isCommentsOpen, setIsCommentsOpen] = useState(false);
     const [selectedResourceId, setSelectedResourceId] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
+    const [activePostMenu, setActivePostMenu] = useState(null);
+    const [shareModalOpen, setShareModalOpen] = useState(null);
+    const [copiedLink, setCopiedLink] = useState(false);
     const [userData, setUserData] = useState({
         username: '',
         profileImage: null,
@@ -37,7 +43,7 @@ const Homepage = () => {
     const [posts, setPosts] = useState([]);
     const [notifications, setNotifications] = useState([]);
     const navigate = useNavigate();
-    const socket = useSocket(); // Use socket
+    const socket = useSocket();
 
     const SERVER_URL = 'https://campcon-test.onrender.com';
 
@@ -156,6 +162,17 @@ const Homepage = () => {
     };
 
     const handleLike = async (resourceId) => {
+        // Optimistic update - immediately update UI
+        setPosts(prev => prev.map(post =>
+            post.id === resourceId
+                ? {
+                    ...post,
+                    liked: !post.liked,
+                    likeCount: post.liked ? post.likeCount - 1 : post.likeCount + 1
+                }
+                : post
+        ));
+
         const token = localStorage.getItem('token');
         try {
             const response = await fetch(`${SERVER_URL}/api/resources/${resourceId}/like`, {
@@ -164,6 +181,7 @@ const Homepage = () => {
             });
             const data = await response.json();
             if (data.success) {
+                // Sync with server data
                 setPosts(prev => prev.map(post =>
                     post.id === resourceId
                         ? {
@@ -173,15 +191,30 @@ const Homepage = () => {
                         }
                         : post
                 ));
-            } else {
-                console.error('Failed to like resource:', data.message);
             }
         } catch (error) {
+            // Rollback on error
+            setPosts(prev => prev.map(post =>
+                post.id === resourceId
+                    ? {
+                        ...post,
+                        liked: !post.liked,
+                        likeCount: post.liked ? post.likeCount + 1 : post.likeCount - 1
+                    }
+                    : post
+            ));
             console.error('Error liking resource:', error.message);
         }
     };
 
     const handleSave = async (resourceId) => {
+        // Optimistic update - immediately update UI
+        setPosts(prev => prev.map(post =>
+            post.id === resourceId
+                ? { ...post, saved: !post.saved }
+                : post
+        ));
+
         const token = localStorage.getItem('token');
         try {
             const response = await fetch(`${SERVER_URL}/api/resources/${resourceId}/save`, {
@@ -190,15 +223,20 @@ const Homepage = () => {
             });
             const data = await response.json();
             if (data.success) {
+                // Sync with server
                 setPosts(prev => prev.map(post =>
                     post.id === resourceId
                         ? { ...post, saved: data.saved }
                         : post
                 ));
-            } else {
-                console.error('Failed to save resource:', data.message);
             }
         } catch (error) {
+            // Rollback on error
+            setPosts(prev => prev.map(post =>
+                post.id === resourceId
+                    ? { ...post, saved: !post.saved }
+                    : post
+            ));
             console.error('Error saving resource:', error.message);
         }
     };
@@ -240,6 +278,18 @@ const Homepage = () => {
     const handleSettings = () => {
         setSidebarOpen(false);
         setIsSettingsOpen(true);
+    };
+
+    const handleShare = async (postId, fileUrl) => {
+        const shareUrl = fileUrl || `${window.location.origin}/resource/${postId}`;
+        try {
+            await navigator.clipboard.writeText(shareUrl);
+            setCopiedLink(true);
+            setTimeout(() => setCopiedLink(false), 2000);
+        } catch (error) {
+            console.error('Failed to copy link:', error);
+        }
+        setActivePostMenu(null);
     };
 
     const handleOpenComments = (resourceId) => {
@@ -375,9 +425,42 @@ const Homepage = () => {
                                         </div>
                                         <span className="username">{post.username}</span>
                                     </div>
-                                    <button className="more-options">
-                                        <MoreHorizontal size={20} />
-                                    </button>
+                                    <div className="post-menu-container">
+                                        <button
+                                            className="more-options"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setActivePostMenu(activePostMenu === post.id ? null : post.id);
+                                            }}
+                                        >
+                                            <MoreHorizontal size={20} />
+                                        </button>
+                                        {activePostMenu === post.id && (
+                                            <div className="post-menu-dropdown">
+                                                <button
+                                                    className="menu-item"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleShare(post.id, post.fileUrl);
+                                                    }}
+                                                >
+                                                    {copiedLink ? <Check size={16} /> : <Share2 size={16} />}
+                                                    <span>{copiedLink ? 'Link Copied!' : 'Share Resource'}</span>
+                                                </button>
+                                                <button
+                                                    className="menu-item"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setActivePostMenu(null);
+                                                        alert('User blocked (feature coming soon)');
+                                                    }}
+                                                >
+                                                    <X size={16} />
+                                                    <span>Block User</span>
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <div className="post-content">
@@ -432,17 +515,15 @@ const Homepage = () => {
                                             </div>
                                         )}
                                         {!isImage(post.fileType) && !isVideo(post.fileType) && !isPDF(post.fileType) && post.fileUrl && (
-                                            <div className="file-preview">
-                                                <div className="file-icon">📎</div>
-                                                <a
-                                                    href={post.fileUrl}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="file-link"
-                                                    onClick={(e) => e.stopPropagation()}
-                                                >
-                                                    Download File
-                                                </a>
+                                            <div className="file-thumbnail" onClick={(e) => {
+                                                e.stopPropagation();
+                                                window.open(post.fileUrl, '_blank');
+                                            }}>
+                                                <div className="file-thumbnail-icon">📁</div>
+                                                <div className="file-thumbnail-info">
+                                                    <span className="file-name">{post.title}</span>
+                                                    <span className="file-action">Click to download</span>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
