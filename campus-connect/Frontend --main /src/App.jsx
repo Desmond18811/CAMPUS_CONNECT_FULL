@@ -15,6 +15,9 @@ import ResetPassword from './Components/ResetPassword.jsx';
 import Comments from './Components/Comments.jsx';
 import LikedPostsPopup from "./Components/LikedPostsPopUp.jsx";
 import AuthSuccess from "./Components/AuthSuccess.jsx";
+import Help from "./Components/Help.jsx";
+import PrivacySupport from "./Components/PrivacySupport.jsx";
+import AccountStatus from "./Components/AccountStatus.jsx";
 import { SocketProvider } from './Context/SocketContext.jsx';
 
 function App() {
@@ -38,7 +41,10 @@ function App() {
                     <Route path="/comments" element={<Comments />} />
                     <Route path="/likedPosts" element={<LikedPostsPopup />} />
                     <Route path="/auth-success" element={<AuthSuccess />} />
-                    <Route path="*" element={<LandingPage />} /> {/* Catch-all route */}
+                    <Route path="/help" element={<Help />} />
+                    <Route path="/privacy-support" element={<PrivacySupport />} />
+                    <Route path="/account-status" element={<AccountStatus />} />
+                    <Route path="*" element={<LandingPage />} />
                 </Routes>
             </Router>
         </SocketProvider>

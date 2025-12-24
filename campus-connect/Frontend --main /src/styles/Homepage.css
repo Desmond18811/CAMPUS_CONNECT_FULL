@@ -114,11 +114,10 @@ body {
 /* Mobile Header */
 .mobile-header {
     display: none;
-    /* Hidden on desktop */
     width: 100%;
     padding: 16px;
     align-items: center;
-    justify-content: space-between;
+    gap: 12px;
     background: white;
     position: sticky;
     top: 0;
@@ -126,17 +125,57 @@ body {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-.mobile-header h1 {
-    font-size: 20px;
-    font-weight: bold;
-    color: #111827;
-}
-
-.menu-btn {
+.hamburger-btn {
     background: none;
     border: none;
+    padding: 8px;
     cursor: pointer;
-    padding: 4px;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.hamburger-btn:hover {
+    background: #f3f4f6;
+}
+
+.mobile-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mobile-logo .logo-icon {
+    background: #2563eb;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.mobile-logo .logo-text {
+    font-weight: 600;
+    color: #111827;
+    font-size: 18px;
+}
+
+/* Sidebar Overlay */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 49;
 }
 
 .search-container {
@@ -617,6 +656,10 @@ body {
 
     .mobile-header {
         display: flex;
+    }
+
+    .sidebar-overlay {
+        display: block;
     }
 
     .sidebar-header {

@@ -14,7 +14,8 @@ import {
     X,
     Share2,
     Copy,
-    Check
+    Check,
+    Menu
 } from 'lucide-react';
 import '../styles/HomePage.css';
 import Create from './Create';
@@ -82,8 +83,18 @@ const Homepage = () => {
             })
             .catch(error => console.error('Error fetching profile:', error.message));
 
-        // Fetch resources, liked, and saved concurrently
+        // Fetch resources, liked, and saved concurrently with caching
         const fetchData = async () => {
+            // Check for cached data first
+            const cachedPosts = sessionStorage.getItem('campusconnect_posts');
+            const cachedTimestamp = sessionStorage.getItem('campusconnect_posts_timestamp');
+            const CACHE_DURATION = 30000; // 30 seconds cache
+
+            if (cachedPosts && cachedTimestamp && (Date.now() - parseInt(cachedTimestamp)) < CACHE_DURATION) {
+                setPosts(JSON.parse(cachedPosts));
+                // Still fetch in background to refresh
+            }
+
             try {
                 const [resourcesRes, likedRes, savedRes] = await Promise.all([
                     fetch(`${SERVER_URL}/api/resources`, {
@@ -107,23 +118,35 @@ const Homepage = () => {
                     const likedIds = likedData.data.map(post => post._id);
                     const savedIds = savedData.data.map(post => post._id);
 
+                    // Helper to get proper URL (handles both Cloudinary and local paths)
+                    const getFullUrl = (url) => {
+                        if (!url) return '';
+                        if (url.startsWith('http://') || url.startsWith('https://')) return url;
+                        return `${SERVER_URL}${url}`;
+                    };
+
                     const fetchedPosts = resourcesData.data.map(post => ({
                         id: post._id,
                         username: post.uploader?.username || 'Unknown',
-                        profileImage: post.profilePic ? `${SERVER_URL}${post.profilePic}` : post.uploader?.profilePic ? `${SERVER_URL}${post.uploader.profilePic}` : null,
+                        profileImage: getFullUrl(post.profilePic || post.uploader?.profilePic),
                         profileColor: generateUserColor(post.uploader?.username || post._id),
-                        imageUrl: post.imageUrl ? `${SERVER_URL}${post.imageUrl}` : '',
-                        fileUrl: post.fileUrl ? `${SERVER_URL}${post.fileUrl}` : '',
+                        imageUrl: getFullUrl(post.imageUrl),
+                        fileUrl: getFullUrl(post.fileUrl),
                         fileType: post.fileType || '',
                         timeAgo: formatTimeAgo(new Date(post.createdAt)),
                         title: post.title,
                         tags: post.tags || [],
                         taggedUsers: post.taggedUsers || [],
                         likeCount: post.likeCount || 0,
+                        commentCount: post.commentCount || 0,
                         liked: likedIds.includes(post._id),
                         saved: savedIds.includes(post._id)
                     }));
                     setPosts(fetchedPosts);
+
+                    // Cache the data
+                    sessionStorage.setItem('campusconnect_posts', JSON.stringify(fetchedPosts));
+                    sessionStorage.setItem('campusconnect_posts_timestamp', Date.now().toString());
                 } else {
                     console.error('Failed to fetch resources/liked/saved:', resourcesData.message || likedData.message || savedData.message);
                 }
@@ -262,7 +285,7 @@ const Homepage = () => {
     };
 
     const handleExplore = () => {
-        navigate('/Home');
+        navigate('/explore');
     };
 
     const handleLogout = () => {
@@ -367,6 +390,22 @@ const Homepage = () => {
                     </button>
                 </div>
             </div>
+
+            {/* Mobile Header */}
+            <div className="mobile-header">
+                <button className="hamburger-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
+                    <Menu size={24} />
+                </button>
+                <div className="mobile-logo">
+                    <span className="logo-icon">C</span>
+                    <span className="logo-text">Campus Connect</span>
+                </div>
+            </div>
+
+            {/* Sidebar Overlay for Mobile */}
+            {sidebarOpen && (
+                <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
+            )}
 
             <div className="main-content">
                 <div className="search-container">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Download, Heart, MessageCircle, Send, User, ThumbsUp, ThumbsDown, Loader } from 'lucide-react';
+import { X, Download, Heart, MessageCircle, SendHorizontal, User, ThumbsUp, ThumbsDown, Loader } from 'lucide-react';
 import { useSocket } from '../Context/SocketContext';
 import '../styles/ResourceDetail.css';
 
@@ -126,6 +126,9 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
     };
 
     const handleLikeComment = async (commentId) => {
+        // Skip if it's a temporary optimistic comment
+        if (String(commentId).startsWith('temp-')) return;
+
         // Optimistic update
         setComments(prev => prev.map(c =>
             c._id === commentId ? { ...c, likes: (c.likes || 0) + 1, userLiked: true } : c
@@ -139,10 +142,17 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
             });
         } catch (error) {
             console.error('Error liking comment:', error);
+            // Rollback on error
+            setComments(prev => prev.map(c =>
+                c._id === commentId ? { ...c, likes: (c.likes || 0) - 1, userLiked: false } : c
+            ));
         }
     };
 
     const handleDislikeComment = async (commentId) => {
+        // Skip if it's a temporary optimistic comment
+        if (String(commentId).startsWith('temp-')) return;
+
         // Optimistic update
         setComments(prev => prev.map(c =>
             c._id === commentId ? { ...c, dislikes: (c.dislikes || 0) + 1, userDisliked: true } : c
@@ -156,6 +166,10 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
             });
         } catch (error) {
             console.error('Error disliking comment:', error);
+            // Rollback on error
+            setComments(prev => prev.map(c =>
+                c._id === commentId ? { ...c, dislikes: (c.dislikes || 0) - 1, userDisliked: false } : c
+            ));
         }
     };
 
@@ -183,8 +197,11 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
     if (isLoading) {
         return (
             <div className="resource-detail-overlay">
-                <div className="resource-detail-modal">
-                    <div className="loading-spinner">Loading...</div>
+                <div className="resource-detail-modal loading-modal">
+                    <div className="modal-loader">
+                        <Loader className="loader-spin" size={40} />
+                        <span>Loading resource...</span>
+                    </div>
                 </div>
             </div>
         );
@@ -308,7 +325,7 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
                                     disabled={!newComment.trim() || isSubmitting}
                                     className="send-btn"
                                 >
-                                    <Send size={18} />
+                                    <SendHorizontal size={18} />
                                 </button>
                             </div>
                         </form>
