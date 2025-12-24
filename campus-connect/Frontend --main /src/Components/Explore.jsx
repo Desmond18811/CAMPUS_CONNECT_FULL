@@ -95,7 +95,7 @@ const Explore = () => {
     return (
         <div className="explore-page">
             <div className="explore-header">
-                <button className="back-btn" onClick={() => navigate('/Home')}>
+                <button className="back-btn" onClick={() => navigate('/home')}>
                     <ArrowLeft size={24} />
                 </button>
                 <h1>Explore Resources</h1>
@@ -154,7 +154,7 @@ const Explore = () => {
                             <div
                                 key={resource._id}
                                 className="resource-card"
-                                onClick={() => navigate(`/Home`)}
+                                onClick={() => navigate(`/home`)}
                             >
                                 <div className="resource-thumbnail">
                                     {resource.imageUrl ? (
