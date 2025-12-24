@@ -322,3 +322,61 @@ export const likeComment = async (req, res) => {
         });
     }
 };
+
+export const dislikeComment = async (req, res) => {
+    try {
+        const { commentId } = req.params;
+        const userId = req.user._id;
+
+        const comment = await Comment.findById(commentId);
+        if (!comment) {
+            return res.status(404).json({
+                success: false,
+                message: 'Comment not found'
+            });
+        }
+
+        const isDisliked = comment.dislikes?.includes(userId);
+        const isLiked = comment.likes?.includes(userId);
+        let message;
+
+        // If already disliked, remove dislike
+        if (isDisliked) {
+            comment.dislikes.pull(userId);
+            message = 'Dislike removed';
+        } else {
+            // Remove like if exists
+            if (isLiked) {
+                comment.likes.pull(userId);
+            }
+            // Initialize dislikes array if not exists
+            if (!comment.dislikes) {
+                comment.dislikes = [];
+            }
+            comment.dislikes.push(userId);
+            message = 'Comment disliked';
+        }
+
+        await comment.save();
+
+        req.io.to(comment.resource.toString()).emit('commentDisliked', {
+            commentId,
+            likes: comment.likes?.length || 0,
+            dislikes: comment.dislikes?.length || 0,
+            userId
+        });
+
+        res.json({
+            success: true,
+            message,
+            likes: comment.likes?.length || 0,
+            dislikes: comment.dislikes?.length || 0
+        });
+    } catch (error) {
+        console.error('Error in dislikeComment:', { message: error.message, stack: error.stack });
+        res.status(500).json({
+            success: false,
+            message: `Failed to dislike comment: ${error.message}`
+        });
+    }
+};

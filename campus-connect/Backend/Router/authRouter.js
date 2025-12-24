@@ -1,6 +1,6 @@
 import express from 'express';
 import passport from 'passport';
-import { register, login, logout, getCurrentUser } from '../Controllers/users.js';
+import { register, login, logout, getCurrentUser, forgotPassword, resetPassword } from '../Controllers/users.js';
 import jwt from "jsonwebtoken";
 
 const router = express.Router();
@@ -8,6 +8,10 @@ const router = express.Router();
 // Regular registration and login
 router.post('/register', register);
 router.post('/login', login);
+
+// Forgot Password & Reset Password
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password/:token', resetPassword);
 
 // Google OAuth routes
 router.get('/google',

@@ -26,7 +26,11 @@ const commentSchema = new mongoose.Schema({
     }],
     likes: [{
         type: mongoose.Schema.Types.ObjectId,
-       ref: 'User'
+        ref: 'User'
+    }],
+    dislikes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }],
     createdAt: {
         type: Date,
@@ -40,7 +44,7 @@ const commentSchema = new mongoose.Schema({
 commentSchema.index({ resource: 1, createdAt: -1 });
 commentSchema.index({ user: 1, resource: 1 });
 
-commentSchema.pre('save', function(next) {
+commentSchema.pre('save', function (next) {
     this.updatedAt = Date.now();
     next();
 });

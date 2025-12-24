@@ -45,6 +45,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: '' // Can set a default placeholder URL if desired, e.g., '/default-avatar.png'
     },
+    passwordResetToken: {
+        type: String,
+        default: null
+    },
+    passwordResetExpires: {
+        type: Date,
+        default: null
+    },
     createdAt: {
         type: Date,
         default: Date.now
