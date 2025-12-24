@@ -195,6 +195,49 @@ const Create = ({ onClose, userData }) => {
                         )}
                     </div>
 
+                    {/* File Preview Section */}
+                    {(selectedImage || selectedFile) && (
+                        <div className="file-preview-section">
+                            <h4>Preview</h4>
+                            <div className="file-preview-content">
+                                {selectedImage && (
+                                    <div className="image-preview">
+                                        <img
+                                            src={URL.createObjectURL(selectedImage)}
+                                            alt="Thumbnail preview"
+                                            className="preview-thumbnail"
+                                        />
+                                        <button
+                                            className="remove-preview-btn"
+                                            onClick={() => setSelectedImage(null)}
+                                        >
+                                            <X size={16} />
+                                        </button>
+                                    </div>
+                                )}
+                                {selectedFile && (
+                                    <div className="file-info">
+                                        <div className="file-icon">
+                                            <FileText size={24} />
+                                        </div>
+                                        <div className="file-details">
+                                            <span className="file-name">{selectedFile.name}</span>
+                                            <span className="file-size">
+                                                {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                                            </span>
+                                        </div>
+                                        <button
+                                            className="remove-preview-btn"
+                                            onClick={() => setSelectedFile(null)}
+                                        >
+                                            <X size={16} />
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
                     <div className="media-icons">
                         <input
                             type="file"

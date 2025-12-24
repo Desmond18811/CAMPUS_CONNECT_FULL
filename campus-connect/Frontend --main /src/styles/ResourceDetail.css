@@ -6,7 +6,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -16,7 +16,7 @@
 }
 
 .resource-detail-modal {
-    background: #1a1a2e;
+    background: #ffffff;
     border-radius: 20px;
     width: 100%;
     max-width: 900px;
@@ -25,7 +25,8 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e5e7eb;
     animation: slideUp 0.3s ease-out;
 }
 
@@ -45,9 +46,9 @@
     position: absolute;
     top: 15px;
     right: 15px;
-    background: rgba(255, 255, 255, 0.1);
+    background: #f3f4f6;
     border: none;
-    color: #fff;
+    color: #374151;
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -60,7 +61,7 @@
 }
 
 .close-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: #e5e7eb;
     transform: scale(1.1);
 }
 
@@ -75,7 +76,8 @@
 /* Resource Preview Section */
 .resource-preview-section {
     padding: 25px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid #e5e7eb;
+    background: #f9fafb;
 }
 
 .resource-preview-image {
@@ -84,18 +86,20 @@
     object-fit: cover;
     border-radius: 12px;
     margin-bottom: 20px;
+    border: 1px solid #e5e7eb;
 }
 
 .resource-preview-placeholder {
     width: 100%;
     height: 200px;
-    background: rgba(255, 255, 255, 0.05);
+    background: #f3f4f6;
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #666;
+    color: #9ca3af;
     margin-bottom: 20px;
+    border: 2px dashed #d1d5db;
 }
 
 .resource-info {
@@ -103,24 +107,24 @@
 }
 
 .resource-title {
-    color: #fff;
+    color: #111827;
     font-size: 1.5rem;
     font-weight: 600;
     margin: 0 0 10px;
 }
 
 .resource-uploader {
-    color: #888;
+    color: #6b7280;
     font-size: 0.9rem;
     margin: 0 0 10px;
 }
 
 .resource-uploader strong {
-    color: #007BFF;
+    color: #2563eb;
 }
 
 .resource-description {
-    color: #aaa;
+    color: #4b5563;
     font-size: 0.95rem;
     line-height: 1.5;
     margin: 0 0 15px;
@@ -133,8 +137,8 @@
 }
 
 .resource-tag {
-    background: rgba(0, 123, 255, 0.2);
-    color: #007BFF;
+    background: #dbeafe;
+    color: #2563eb;
     padding: 4px 12px;
     border-radius: 20px;
     font-size: 0.8rem;
@@ -147,7 +151,7 @@
     gap: 10px;
     width: 100%;
     padding: 14px;
-    background: linear-gradient(135deg, #007BFF, #0056b3);
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
     color: white;
     border: none;
     border-radius: 12px;
@@ -159,7 +163,7 @@
 
 .download-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(0, 123, 255, 0.4);
+    box-shadow: 0 5px 20px rgba(37, 99, 235, 0.4);
 }
 
 /* Comments Section */
@@ -169,17 +173,18 @@
     flex-direction: column;
     overflow: hidden;
     padding: 20px 25px;
+    background: #ffffff;
 }
 
 .comments-header {
     display: flex;
     align-items: center;
     gap: 10px;
-    color: #fff;
+    color: #111827;
     font-size: 1.1rem;
     margin: 0 0 15px;
     padding-bottom: 15px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid #e5e7eb;
 }
 
 .comments-list {
@@ -194,17 +199,17 @@
 }
 
 .comments-list::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: #f3f4f6;
     border-radius: 3px;
 }
 
 .comments-list::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: #d1d5db;
     border-radius: 3px;
 }
 
 .no-comments {
-    color: #666;
+    color: #9ca3af;
     text-align: center;
     padding: 30px;
     font-style: italic;
@@ -214,7 +219,7 @@
     display: flex;
     gap: 12px;
     padding: 15px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid #f3f4f6;
 }
 
 .comment-item:last-child {
@@ -225,11 +230,11 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: rgba(0, 123, 255, 0.2);
+    background: #dbeafe;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #007BFF;
+    color: #2563eb;
     flex-shrink: 0;
     overflow: hidden;
 }
@@ -252,18 +257,18 @@
 }
 
 .comment-username {
-    color: #007BFF;
+    color: #2563eb;
     font-weight: 600;
     font-size: 0.9rem;
 }
 
 .comment-time {
-    color: #666;
+    color: #9ca3af;
     font-size: 0.75rem;
 }
 
 .comment-text {
-    color: #ddd;
+    color: #374151;
     font-size: 0.9rem;
     line-height: 1.4;
     margin: 0;
@@ -272,37 +277,38 @@
 /* Comment Input */
 .comment-input-form {
     padding-top: 15px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid #e5e7eb;
 }
 
 .comment-input-wrapper {
     display: flex;
     align-items: center;
     gap: 10px;
-    background: rgba(255, 255, 255, 0.05);
+    background: #f3f4f6;
     border-radius: 25px;
     padding: 5px 5px 5px 20px;
+    border: 1px solid #e5e7eb;
 }
 
 .comment-input-wrapper input {
     flex: 1;
     background: transparent;
     border: none;
-    color: #fff;
+    color: #111827;
     font-size: 0.95rem;
     padding: 10px 0;
     outline: none;
 }
 
 .comment-input-wrapper input::placeholder {
-    color: #666;
+    color: #9ca3af;
 }
 
 .send-btn {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #007BFF, #0056b3);
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
     border: none;
     color: white;
     cursor: pointer;
@@ -326,7 +332,7 @@
     align-items: center;
     justify-content: center;
     height: 300px;
-    color: #888;
+    color: #6b7280;
     font-size: 1.1rem;
 }
 

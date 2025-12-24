@@ -1,7 +1,6 @@
 .navbar {
   position: fixed;
   top: 1rem;
-  /* like top-4 */
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -9,10 +8,8 @@
   justify-content: space-between;
   width: 95%;
   max-width: 900px;
-  /* like max-w-3xl */
   padding: 0.75rem 1rem;
   background: rgba(0, 47, 108, 0.85);
-  /* deep blue w/ transparency */
   backdrop-filter: blur(10px);
   border: 1px solid rgba(0, 47, 108, 0.9);
   border-radius: 1rem;
@@ -29,7 +26,6 @@
 
 .logo-box {
   background: #1d4ed8;
-  /* blue */
   color: white;
   font-weight: bold;
   padding: 0.4rem 0.6rem;
@@ -62,7 +58,6 @@
 .login-btn:hover {
   background: white;
   color: #1d4ed8;
-  /* blue text */
 }
 
 .signup-btn {
@@ -78,5 +73,4 @@
 
 .signup-btn:hover {
   background: #2563eb;
-  /* lighter blue */
 }

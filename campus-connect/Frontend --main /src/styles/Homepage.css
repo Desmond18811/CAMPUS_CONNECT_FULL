@@ -140,11 +140,14 @@ body {
 }
 
 .search-container {
-    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 32px;
     width: 100%;
-    max-width: 600px;
+    max-width: 1400px;
     padding: 0 20px;
-    /* Add padding to search container for alignment */
     margin-left: auto;
     margin-right: auto;
 }
@@ -152,6 +155,25 @@ body {
 .search-bar {
     position: relative;
     width: 100%;
+    max-width: 600px;
+}
+
+.lottie-card {
+    width: 100%;
+    max-width: 800px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.lottie-animation {
+    width: 100%;
+    height: 100%;
+    max-height: 200px;
 }
 
 .search-icon {
@@ -186,7 +208,7 @@ body {
 /* Posts feed */
 .posts-feed {
     display: grid;
-    grid-template-columns: repeat(4, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 24px;
     width: 100%;
     max-width: 1400px;
@@ -198,14 +220,15 @@ body {
     background-color: white;
     border-radius: 16px;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    border: 1px solid #2563eb;
+    border: 1px solid #e5e7eb;
     overflow: hidden;
-    transition: box-shadow 0.2s ease;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
     width: 100%;
 }
 
 .post-card:hover {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
 }
 
 .post-header {
@@ -270,6 +293,79 @@ body {
     color: #d1d5db;
 }
 
+/* Resource Display Styles */
+.resource-display {
+    width: 100%;
+    background: #f9fafb;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.resource-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px;
+}
+
+.resource-video {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #000;
+}
+
+.pdf-preview,
+.file-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    background: #f3f4f6;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.pdf-icon,
+.file-icon {
+    font-size: 32px;
+}
+
+.pdf-link,
+.file-link {
+    color: #2563eb;
+    font-weight: 500;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.pdf-link:hover,
+.file-link:hover {
+    text-decoration: underline;
+}
+
+.file-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 120px;
+    background: #f3f4f6;
+    color: #9ca3af;
+    font-size: 0.9rem;
+    border-radius: 8px;
+}
+
+.no-posts {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: #6b7280;
+    font-size: 1.1rem;
+}
+
 .post-content {
     padding: 16px;
 }
@@ -287,33 +383,12 @@ body {
 }
 
 .tag {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-}
-
-.tag-red {
-    background-color: #ef4444;
-}
-
-.tag-blue {
-    background-color: #3b82f6;
-}
-
-.tag-orange {
-    background-color: #f97316;
-}
-
-.tag-green {
-    background-color: #10b981;
-}
-
-.tag-purple {
-    background-color: #8b5cf6;
-}
-
-.tag-yellow {
-    background-color: #fbbf24;
+    background: #dbeafe;
+    color: #2563eb;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
 }
 
 .post-title {
@@ -421,27 +496,25 @@ body {
 @media (max-width: 1280px) {
     .posts-feed {
         padding: 0 16px;
-    }
-
-    .post-card {
-        max-width: 600px;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     }
 }
 
 @media (max-width: 1024px) {
     .posts-feed {
         padding: 0 12px;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     }
 
-    .post-card {
-        max-width: 500px;
+    .lottie-card {
+        max-width: 600px;
+        height: 160px;
     }
 }
 
 @media (max-width: 768px) {
     .sidebar {
         width: 80%;
-        /* Drawer width */
         max-width: 300px;
         position: fixed;
         height: 100vh;
@@ -456,7 +529,6 @@ body {
     .sidebar.closed {
         transform: translateX(-100%);
         display: flex !important;
-        /* Override inline style to allow transition */
     }
 
     .close-sidebar-btn {
@@ -476,13 +548,17 @@ body {
     .main-content {
         margin-left: 0;
         padding: 0 0 80px 0;
-        /* Add bottom padding for FAB */
         width: 100%;
     }
 
     .search-container {
         padding: 16px;
-        margin-bottom: 0;
+        margin-bottom: 16px;
+    }
+
+    .lottie-card {
+        max-width: 100%;
+        height: 140px;
     }
 
     .campus-connect {
@@ -491,8 +567,13 @@ body {
 
     .posts-feed {
         padding: 0 16px;
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 580px) {
+    .posts-feed {
         grid-template-columns: 1fr;
-        /* Single column on mobile */
     }
 
     .post-card {
@@ -526,5 +607,9 @@ body {
         right: 16px;
         width: 48px;
         height: 48px;
+    }
+
+    .lottie-card {
+        height: 120px;
     }
 }

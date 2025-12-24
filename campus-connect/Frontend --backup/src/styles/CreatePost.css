@@ -140,8 +140,10 @@
   padding: 10px;
   border: 1px solid #d1d5db;
   border-radius: 8px;
-  background-color: #ffffff; /* ✅ White background */
-  color: #000000; /* ✅ Black text */
+  background-color: #ffffff;
+  /* ✅ White background */
+  color: #000000;
+  /* ✅ Black text */
   font-size: 17px;
   resize: vertical;
   outline: none;
@@ -149,7 +151,8 @@
 }
 
 .title-input:focus {
-  border-color: #1d4ed8; /* Highlight border on focus */
+  border-color: #1d4ed8;
+  /* Highlight border on focus */
 
 }
 
@@ -337,4 +340,115 @@
   .content {
     padding: 14px;
   }
+}
+
+/* File Preview Section */
+.file-preview-section {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.file-preview-section h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 12px;
+}
+
+.file-preview-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.image-preview {
+  position: relative;
+  display: inline-block;
+}
+
+.preview-thumbnail {
+  width: 100%;
+  max-width: 200px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.remove-preview-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.remove-preview-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.file-icon {
+  width: 40px;
+  height: 40px;
+  background: #dbeafe;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2563eb;
+}
+
+.file-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.file-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-size {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.file-info .remove-preview-btn {
+  position: static;
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.file-info .remove-preview-btn:hover {
+  background: #e5e7eb;
+  color: #374151;
 }

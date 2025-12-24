@@ -11,12 +11,13 @@ import {
     MoreHorizontal,
     MessageCircle,
     Edit,
-    X
+    X,
+    Menu
 } from 'lucide-react';
 import '../styles/HomePage.css';
 import Create from './Create';
 import SettingsComponent from './Settings';
-import Comments from './Comments';
+import ResourceDetailPopup from './ResourceDetailPopup';
 import animationData from '../assets/onlineLearning.json';
 import { useNavigate } from 'react-router-dom';
 import Lottie from "lottie-react";
@@ -28,6 +29,7 @@ const Homepage = () => {
     const [isCommentsOpen, setIsCommentsOpen] = useState(false);
     const [selectedResourceId, setSelectedResourceId] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
+    const [activePostMenu, setActivePostMenu] = useState(null);
     const [userData, setUserData] = useState({
         username: '',
         profileImage: null,
@@ -39,14 +41,20 @@ const Homepage = () => {
 
     const SERVER_URL = 'https://campcon-test.onrender.com';
 
-    const generateUserColor = (username) => {
-        if (!username) return userData.profileColor;
+    // Generate consistent random color from username
+    const generateRandomColor = (username) => {
+        const colors = [
+            '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16',
+            '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9',
+            '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#d946ef',
+            '#ec4899', '#f43f5e'
+        ];
+        if (!username) return colors[0];
         let hash = 0;
         for (let i = 0; i < username.length; i++) {
             hash = username.charCodeAt(i) + ((hash << 5) - hash);
         }
-        const hue = hash % 360;
-        return `hsl(${hue}, 70%, 60%)`;
+        return colors[Math.abs(hash) % colors.length];
     };
 
     useEffect(() => {
@@ -103,7 +111,7 @@ const Homepage = () => {
                         id: post._id,
                         username: post.uploader?.username || 'Unknown',
                         profileImage: post.profilePic ? `${SERVER_URL}${post.profilePic}` : post.uploader?.profilePic ? `${SERVER_URL}${post.uploader.profilePic}` : null,
-                        profileColor: post.profileColor || post.uploader?.profileColor || generateUserColor(post.uploader?.username || ''),
+                        profileColor: generateRandomColor(post.uploader?.username || post._id),
                         imageUrl: post.imageUrl ? `${SERVER_URL}${post.imageUrl}` : '',
                         fileUrl: post.fileUrl ? `${SERVER_URL}${post.fileUrl}` : '',
                         fileType: post.fileType || '',
@@ -154,6 +162,17 @@ const Homepage = () => {
     };
 
     const handleLike = async (resourceId) => {
+        // Optimistic update
+        setPosts(prev => prev.map(post =>
+            post.id === resourceId
+                ? {
+                    ...post,
+                    liked: !post.liked,
+                    likeCount: post.liked ? post.likeCount - 1 : post.likeCount + 1
+                }
+                : post
+        ));
+
         const token = localStorage.getItem('token');
         try {
             const response = await fetch(`${SERVER_URL}/api/resources/${resourceId}/like`, {
@@ -162,6 +181,7 @@ const Homepage = () => {
             });
             const data = await response.json();
             if (data.success) {
+                // Confirm with server data
                 setPosts(prev => prev.map(post =>
                     post.id === resourceId
                         ? {
@@ -171,15 +191,21 @@ const Homepage = () => {
                         }
                         : post
                 ));
-            } else {
-                console.error('Failed to like resource:', data.message);
             }
         } catch (error) {
             console.error('Error liking resource:', error.message);
+            // Revert on error could be implemented here
         }
     };
 
     const handleSave = async (resourceId) => {
+        // Optimistic update
+        setPosts(prev => prev.map(post =>
+            post.id === resourceId
+                ? { ...post, saved: !post.saved }
+                : post
+        ));
+
         const token = localStorage.getItem('token');
         try {
             const response = await fetch(`${SERVER_URL}/api/resources/${resourceId}/save`, {
@@ -193,8 +219,6 @@ const Homepage = () => {
                         ? { ...post, saved: data.saved }
                         : post
                 ));
-            } else {
-                console.error('Failed to save resource:', data.message);
             }
         } catch (error) {
             console.error('Error saving resource:', error.message);
@@ -241,7 +265,8 @@ const Homepage = () => {
     };
 
     const handleOpenComments = (resourceId) => {
-        setSelectedResourceId(resourceId);
+        const resource = posts.find(p => p.id === resourceId);
+        setSelectedResourceId(resource);
         setIsCommentsOpen(true);
         setSidebarOpen(false);
     };
@@ -260,9 +285,33 @@ const Homepage = () => {
 
     return (
         <div className="campus-connect">
-            <div className={`sidebar ${!sidebarOpen ? 'closed' : ''}`} style={{ display: sidebarOpen ? 'flex' : 'none' }}>
+            {/* Mobile Header with Hamburger and Logo */}
+            <div className="mobile-header">
+                <button
+                    className="hamburger-btn"
+                    onClick={() => setSidebarOpen(true)}
+                >
+                    <Menu size={24} />
+                </button>
+                <div className="mobile-logo-container">
+                    <div className="c-logo-small">C</div>
+                    <span className="mobile-title">Campus Connect</span>
+                </div>
+                <div style={{ width: 24 }}></div> {/* Spacer for centering */}
+            </div>
+
+            {/* Sidebar Overlay for Mobile */}
+            <div
+                className={`sidebar-overlay ${sidebarOpen ? 'visible' : ''}`}
+                onClick={() => setSidebarOpen(false)}
+            />
+
+            <div className={`sidebar ${!sidebarOpen ? 'closed' : 'open'}`}>
                 <div className="sidebar-header">
-                    <h1>Campus Connect</h1>
+                    <div className="header-logo-container">
+                        <div className="c-logo-small">C</div>
+                        <h1>Campus Connect</h1>
+                    </div>
                 </div>
                 <nav className="navigation">
                     <div className="nav-item" onClick={handleSearchNavigation}>
@@ -359,10 +408,35 @@ const Homepage = () => {
                                         </div>
                                         <span className="username">{post.username}</span>
                                     </div>
-                                    <button className="more-options">
-                                        <MoreHorizontal size={20} />
-                                    </button>
+                                    <div className="post-menu-container">
+                                        <button
+                                            className="more-options"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setActivePostMenu(activePostMenu === post.id ? null : post.id);
+                                            }}
+                                        >
+                                            <MoreHorizontal size={20} />
+                                        </button>
+                                        {activePostMenu === post.id && (
+                                            <div className="post-menu-dropdown">
+                                                <button className="menu-item">
+                                                    Report User
+                                                </button>
+                                                <button className="menu-item">
+                                                    Block User
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
+                                {/* Close menu when clicking outside */}
+                                {activePostMenu === post.id && (
+                                    <div
+                                        className="menu-backdrop"
+                                        onClick={() => setActivePostMenu(null)}
+                                    />
+                                )}
                                 <div className="document-preview">
                                     <a href={post.fileUrl} target="_blank" rel="noopener noreferrer">
                                         {isVideo(post.fileType) ? (
@@ -489,7 +563,7 @@ const Homepage = () => {
                                         id: post._id,
                                         username: post.uploader?.username || 'Unknown',
                                         profileImage: post.profilePic ? `${SERVER_URL}${post.profilePic}` : post.uploader?.profilePic ? `${SERVER_URL}${post.uploader.profilePic}` : null,
-                                        profileColor: post.profileColor || post.uploader?.profileColor || generateUserColor(post.uploader?.username || ''),
+                                        profileColor: post.profileColor || post.uploader?.profileColor || generateRandomColor(post.uploader?.username || ''),
                                         imageUrl: post.imageUrl ? `${SERVER_URL}${post.imageUrl}` : '',
                                         fileUrl: post.fileUrl ? `${SERVER_URL}${post.fileUrl}` : '',
                                         fileType: post.fileType || '',
@@ -512,14 +586,16 @@ const Homepage = () => {
                     userData={userData}
                 />
             )}
-            {isCommentsOpen && (
-                <Comments
-                    resourceId={selectedResourceId}
+            {isCommentsOpen && selectedResourceId && (
+                <ResourceDetailPopup
+                    resource={selectedResourceId}
                     onClose={() => {
                         setIsCommentsOpen(false);
+                        setSelectedResourceId(null);
                         setSidebarOpen(true);
-                        navigate('/home');
                     }}
+                    onLike={handleLike}
+                    onSave={handleSave}
                 />
             )}
         </div>
