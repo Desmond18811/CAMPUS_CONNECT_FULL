@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Download, Heart, MessageCircle, SendHorizontal, User, ThumbsUp, ThumbsDown, Loader } from 'lucide-react';
+import { X, Download, Heart, MessageCircle, SendHorizontal, User, ThumbsUp, ThumbsDown, Loader, Share2, FileText, Music, Video, Image } from 'lucide-react';
 import { useSocket } from '../Context/SocketContext';
 import '../styles/ResourceDetail.css';
 
@@ -13,6 +13,38 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
     const socket = useSocket();
 
     const SERVER_URL = 'https://campcon-test.onrender.com';
+
+    // File type detection helpers
+    const getFileExtension = (url) => {
+        if (!url) return '';
+        const match = url.match(/\.([a-zA-Z0-9]+)(?:\?|$)/);
+        return match ? match[1].toLowerCase() : '';
+    };
+
+    const getFileType = (url) => {
+        const ext = getFileExtension(url);
+        const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
+        const videoExts = ['mp4', 'mov', 'avi', 'mkv', 'webm'];
+        const audioExts = ['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a'];
+        const pdfExts = ['pdf'];
+
+        if (imageExts.includes(ext)) return 'image';
+        if (videoExts.includes(ext)) return 'video';
+        if (audioExts.includes(ext)) return 'audio';
+        if (pdfExts.includes(ext)) return 'pdf';
+        return 'file';
+    };
+
+    const handleShareDownloadLink = async () => {
+        if (resource?.fileUrl) {
+            try {
+                await navigator.clipboard.writeText(resource.fileUrl);
+                alert('Download link copied to clipboard!');
+            } catch (err) {
+                console.error('Failed to copy:', err);
+            }
+        }
+    };
 
     useEffect(() => {
         if (resourceId) {
@@ -217,19 +249,57 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
                 <div className="resource-detail-content">
                     {/* Resource Preview Section */}
                     <div className="resource-preview-section">
-                        {resource?.imageUrl ? (
-                            <img
-                                src={resource.imageUrl}
-                                alt={resource.title}
-                                className="resource-preview-image"
-                            />
-                        ) : (
-                            <div className="resource-preview-placeholder">
-                                <svg width="80" height="80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                            </div>
-                        )}
+                        {/* Smart Preview based on file type */}
+                        {(() => {
+                            const fileType = getFileType(resource?.fileUrl);
+                            const fileUrl = resource?.fileUrl || resource?.imageUrl;
+
+                            if (fileType === 'image' || resource?.imageUrl) {
+                                return (
+                                    <img
+                                        src={resource?.imageUrl || fileUrl}
+                                        alt={resource?.title}
+                                        className="resource-preview-image"
+                                    />
+                                );
+                            } else if (fileType === 'video') {
+                                return (
+                                    <video
+                                        controls
+                                        className="resource-preview-video"
+                                        src={fileUrl}
+                                    >
+                                        Your browser does not support video playback.
+                                    </video>
+                                );
+                            } else if (fileType === 'audio') {
+                                return (
+                                    <div className="resource-preview-audio">
+                                        <Music size={48} />
+                                        <audio controls src={fileUrl}>
+                                            Your browser does not support audio playback.
+                                        </audio>
+                                    </div>
+                                );
+                            } else if (fileType === 'pdf') {
+                                return (
+                                    <div className="resource-preview-pdf">
+                                        <iframe
+                                            src={fileUrl}
+                                            title={resource?.title}
+                                            className="pdf-viewer"
+                                        />
+                                    </div>
+                                );
+                            } else {
+                                return (
+                                    <div className="resource-preview-placeholder">
+                                        <FileText size={64} />
+                                        <span>{getFileExtension(fileUrl).toUpperCase() || 'FILE'}</span>
+                                    </div>
+                                );
+                            }
+                        })()}
 
                         <div className="resource-info">
                             <h2 className="resource-title">{resource?.title}</h2>
@@ -246,11 +316,17 @@ const ResourceDetailPopup = ({ resourceId, onClose, userData }) => {
                             </div>
                         </div>
 
-                        {/* Download Button */}
-                        <button className="download-btn" onClick={handleDownload}>
-                            <Download size={20} />
-                            Download File
-                        </button>
+                        {/* Action Buttons */}
+                        <div className="resource-actions">
+                            <button className="download-btn" onClick={handleDownload}>
+                                <Download size={20} />
+                                Download
+                            </button>
+                            <button className="share-btn" onClick={handleShareDownloadLink}>
+                                <Share2 size={20} />
+                                Share Link
+                            </button>
+                        </div>
                     </div>
 
                     {/* Comments Section */}

@@ -79,6 +79,10 @@ userSchema.add({
     savedResources: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Resource'
+    }],
+    blockedUsers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }]
 });
 
