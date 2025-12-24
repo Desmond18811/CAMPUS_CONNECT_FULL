@@ -1,8 +1,10 @@
-/* Support Pages Shared Styles */
+/* Support Pages - Full Width */
 .support-page {
     min-height: 100vh;
     background: linear-gradient(135deg, #f0f4ff 0%, #e8f4f8 100%);
     padding: 40px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .support-header {
@@ -10,9 +12,7 @@
     align-items: center;
     gap: 20px;
     margin-bottom: 40px;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
+    width: 100%;
 }
 
 .support-header .back-btn {
@@ -27,6 +27,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .support-header .back-btn:hover {
@@ -42,11 +43,11 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    margin: 0;
 }
 
 .support-content {
-    max-width: 1200px;
-    margin: 0 auto;
+    width: 100%;
 }
 
 .loading-container {
@@ -54,9 +55,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 100px 20px;
+    min-height: 400px;
     gap: 20px;
     color: #2563eb;
+    width: 100%;
 }
 
 .loading-container span {
@@ -74,11 +76,13 @@
     border-radius: 20px;
     margin-bottom: 40px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    width: 100%;
     max-width: 600px;
 }
 
 .help-search svg {
     color: #9ca3af;
+    flex-shrink: 0;
 }
 
 .help-search input {
@@ -95,6 +99,7 @@
 
 .help-section {
     margin-bottom: 48px;
+    width: 100%;
 }
 
 .help-section h2 {
@@ -106,8 +111,9 @@
 
 .help-topics {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    width: 100%;
 }
 
 .help-topic-card {
@@ -149,7 +155,7 @@
     display: flex;
     flex-direction: column;
     gap: 14px;
-    max-width: 800px;
+    width: 100%;
 }
 
 .faq-item {
@@ -186,10 +192,11 @@
 /* Contact */
 .contact-section {
     text-align: center;
-    padding: 40px;
+    padding: 60px 40px;
     background: white;
     border-radius: 24px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    width: 100%;
 }
 
 .contact-section h2 {
@@ -200,6 +207,7 @@
     display: flex;
     gap: 20px;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 .contact-btn {
@@ -226,11 +234,12 @@
 /* Privacy Page */
 .privacy-hero {
     text-align: center;
-    padding: 60px 40px;
+    padding: 80px 40px;
     background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
     border-radius: 24px;
     color: white;
     margin-bottom: 40px;
+    width: 100%;
 }
 
 .privacy-hero .hero-icon {
@@ -240,24 +249,26 @@
 .privacy-hero h2 {
     color: white;
     margin-bottom: 12px;
-    font-size: 1.75rem;
+    font-size: 2rem;
 }
 
 .privacy-hero p {
-    margin: 0;
+    margin: 0 auto;
     opacity: 0.9;
     font-size: 1.1rem;
+    max-width: 600px;
 }
 
 .privacy-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    width: 100%;
 }
 
 .privacy-card {
     background: white;
-    padding: 28px;
+    padding: 32px;
     border-radius: 20px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
@@ -282,9 +293,10 @@
 
 .report-section {
     background: #fef3c7;
-    padding: 32px;
+    padding: 40px 32px;
     border-radius: 20px;
     text-align: center;
+    width: 100%;
 }
 
 .warning-icon {
@@ -294,15 +306,14 @@
 
 .report-section p {
     color: #92400e;
-    margin: 0 0 20px;
+    margin: 0 auto 20px;
     font-size: 1rem;
     max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
+    line-height: 1.6;
 }
 
 .report-btn {
-    padding: 14px 28px;
+    padding: 14px 32px;
     background: #f59e0b;
     color: white;
     border: none;
@@ -315,14 +326,15 @@
 
 .report-btn:hover {
     background: #d97706;
+    transform: translateY(-2px);
 }
 
 .rights-list {
     background: white;
-    padding: 28px 32px;
+    padding: 32px 40px;
     border-radius: 20px;
     list-style: none;
-    max-width: 600px;
+    width: 100%;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
@@ -347,11 +359,12 @@
 /* Account Status */
 .status-hero {
     text-align: center;
-    padding: 48px 32px;
+    padding: 60px 40px;
     background: white;
     border-radius: 24px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
     margin-bottom: 40px;
+    width: 100%;
 }
 
 .status-badge {
@@ -372,7 +385,8 @@
 
 .status-hero h2 {
     margin-bottom: 10px;
-    font-size: 1.5rem;
+    font-size: 1.75rem;
+    color: #111827;
 }
 
 .status-hero p {
@@ -383,22 +397,29 @@
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 24px;
+    width: 100%;
 }
 
 .stat-card {
     background: white;
-    padding: 28px;
+    padding: 32px;
     border-radius: 20px;
     display: flex;
     align-items: center;
     gap: 20px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
 }
 
 .stat-card svg {
     color: #2563eb;
+    flex-shrink: 0;
 }
 
 .stat-info {
@@ -421,7 +442,7 @@
     display: flex;
     flex-direction: column;
     gap: 14px;
-    max-width: 500px;
+    width: 100%;
 }
 
 .action-item {
@@ -437,11 +458,14 @@
     font-size: 1.05rem;
     font-weight: 500;
     transition: all 0.2s;
+    text-align: left;
+    width: 100%;
 }
 
 .action-item:hover {
     border-color: #2563eb;
     background: #f0f4ff;
+    transform: translateX(4px);
 }
 
 .action-item.warning {
@@ -454,42 +478,31 @@
 }
 
 /* Responsive */
-@media (max-width: 1024px) {
-    .help-topics {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
 @media (max-width: 768px) {
     .support-page {
-        padding: 20px;
+        padding: 24px 16px;
     }
 
     .support-header h1 {
         font-size: 1.5rem;
     }
 
-    .help-topics {
-        grid-template-columns: 1fr;
-    }
-
-    .privacy-grid {
-        grid-template-columns: 1fr;
-    }
-
+    .help-topics,
+    .privacy-grid,
     .stats-grid {
         grid-template-columns: 1fr;
     }
 
     .contact-options {
         flex-direction: column;
+        align-items: center;
     }
 
     .privacy-hero {
-        padding: 40px 24px;
+        padding: 48px 24px;
+    }
+
+    .stat-card {
+        padding: 24px;
     }
 }

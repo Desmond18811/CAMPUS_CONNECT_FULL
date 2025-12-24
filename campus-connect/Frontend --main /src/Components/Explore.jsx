@@ -5,7 +5,6 @@ import {
     ArrowLeft,
     Heart,
     MessageCircle,
-    Filter,
     Grid,
     List,
     Loader
@@ -20,7 +19,6 @@ const Explore = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [viewMode, setViewMode] = useState('grid');
     const navigate = useNavigate();
-
     const SERVER_URL = 'https://campcon-test.onrender.com';
 
     const categories = [
@@ -60,16 +58,12 @@ const Explore = () => {
 
     const filterResources = () => {
         let filtered = [...resources];
-
-        // Search filter
         if (searchQuery.trim()) {
             filtered = filtered.filter(r =>
                 r.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 r.tags?.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()))
             );
         }
-
-        // Category filter
         if (selectedCategory !== 'all') {
             filtered = filtered.filter(r => {
                 const fileType = r.fileType?.toLowerCase() || '';
@@ -89,7 +83,6 @@ const Explore = () => {
                 }
             });
         }
-
         setFilteredResources(filtered);
     };
 
@@ -101,15 +94,12 @@ const Explore = () => {
 
     return (
         <div className="explore-page">
-            {/* Header */}
             <div className="explore-header">
                 <button className="back-btn" onClick={() => navigate('/Home')}>
                     <ArrowLeft size={24} />
                 </button>
                 <h1>Explore Resources</h1>
             </div>
-
-            {/* Search Bar */}
             <div className="explore-search">
                 <Search size={20} className="search-icon" />
                 <input
@@ -119,8 +109,6 @@ const Explore = () => {
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
             </div>
-
-            {/* Categories */}
             <div className="explore-categories">
                 {categories.map(cat => (
                     <button
@@ -133,8 +121,6 @@ const Explore = () => {
                     </button>
                 ))}
             </div>
-
-            {/* View Toggle */}
             <div className="explore-toolbar">
                 <p className="results-count">{filteredResources.length} resources found</p>
                 <div className="view-toggle">
@@ -152,8 +138,6 @@ const Explore = () => {
                     </button>
                 </div>
             </div>
-
-            {/* Resources Grid/List */}
             {isLoading ? (
                 <div className="explore-loader">
                     <Loader className="loader-spin" size={32} />
